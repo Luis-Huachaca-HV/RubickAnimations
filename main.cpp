@@ -46,6 +46,7 @@ using namespace std;
 
 int modoCamara = 0;
 
+char modoSolucion = 'n';
 char modoRotacion = 'n';
 int rotloop = 90;
 vector<string> pasos;
@@ -261,23 +262,43 @@ cuboRubik cubo12(0.0,-4.0,0);
 cuboRubik cubo13(0.0,-6.0,0);*/
 
 
-std::map<std::string, std::function<void()>> movs;
+// std::map<std::string, std::function<void()>> movs;
+std::map<std::string, char > movs;
 
 void initializeMap() {
-    movs["R"] = [&]() { rotarRigth(cubo1); };
-    movs["R'"] = [&]() { rotarRigthI(cubo1); };
-    movs["L"] = [&]() { rotarLeft(cubo1); };
-    movs["L'"] = [&]() { rotarLeftI(cubo1); };
-    movs["F"] = [&]() { rotarFront(cubo1); };
-    movs["F'"] = [&]() { rotarFrontI(cubo1); };
-    movs["B"] = [&]() { rotarBack(cubo1); };
-    movs["B'"] = [&]() { rotarBackI(cubo1); };
-    movs["U"] = [&]() { rotarUp(cubo1); };
-    movs["U'"] = [&]() { rotarUpInv(cubo1); };
-    movs["D"] = [&]() { rotarDown(cubo1); };
-    movs["D'"] = [&]() { rotarDownI(cubo1); };
+    movs["R"] = 'r';
+    movs["R'"] = 'h';
+    movs["L"] = 'l';
+    movs["L'"] ='k';
+    movs["F"] = 'f';
+    movs["F'"] = 't';
+    movs["B"] = 'b';
+    movs["B'"] = 'g';
+    movs["U"] = 'u';
+    movs["U'"] = 'o';
+    movs["D"] = 'd';
+    movs["D'"] =  'm';
 }
- int i =0;
+// void initializeMap() {
+//     movs["R"] = [&]() { rotarRigth(cubo1); };
+//     movs["R'"] = [&]() { rotarRigthI(cubo1); };
+//     movs["L"] = [&]() { rotarLeft(cubo1); };
+//     movs["L'"] = [&]() { rotarLeftI(cubo1); };
+//     movs["F"] = [&]() { rotarFront(cubo1); };
+//     movs["F'"] = [&]() { rotarFrontI(cubo1); };
+//     movs["B"] = [&]() { rotarBack(cubo1); };
+//     movs["B'"] = [&]() { rotarBackI(cubo1); };
+//     movs["U"] = [&]() { rotarUp(cubo1); };
+//     movs["U'"] = [&]() { rotarUpInv(cubo1); };
+//     movs["D"] = [&]() { rotarDown(cubo1); };
+//     movs["D'"] = [&]() { rotarDownI(cubo1); };
+// }
+
+int i =0;
+
+
+
+
 int main()
 {
     //cubo1.Up();
@@ -348,7 +369,14 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-
+       
+        if(modoSolucion != 'n'){
+              cout<<"\nMODO SOL: "<<modoSolucion;
+        }
+        if(modoRotacion != 'n'){
+              cout<<"\nMODO ROTACION: "<<modoRotacion;
+        }
+      
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -388,36 +416,20 @@ int main()
                 }
                 continue;
         }*/
-        if (modoRotacion == '3'){
-            //for (int i = 0; i < solvecube.size(); i++) {
-                //std::string key(1, solvecube[i]);
+
+         if (modoSolucion == '3' && modoRotacion == 'n'){
                 if (i < pasos_solu.size()) {
-                    movs[pasos_solu[i]]();
-                    //continue; // Call the function associated with the key
+                    modoRotacion =  movs[pasos_solu[i]];
                 }
                 else {
                     std::cout << "Invalid input" << std::endl;
-                    modoRotacion = 'n';
+                    modoSolucion = 'n';
                     modoCamara =2;
                     i=0;
-                    //pasoslib = "";
-                    //pasos_solu.clear();
                 }
-                cubo1.dibujar(ourShader);
-                //tes+
-
-                glfwSwapBuffers(window);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust the sleep time as per your preference (e.g., 10 milliseconds).
-                glfwPollEvents();
-                //ss    i++;
-                if(modoRotacion == 'n'){
-                    i++;
-                }
-                //}
-            
-
-            continue;
+                i++;
         }
+
         
         if (modoCamara == 0) {
 
@@ -600,7 +612,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (modoRotacion == 'n') {
         //i++;
         if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-            modoRotacion = '3';
+            modoSolucion = '3';
         if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
             modoRotacion = 'u';
             pasos.push_back("U");
