@@ -269,10 +269,11 @@ public:
         {fr,ur,dr,br}, //R
         {fl,ul,dl,bl}  //L
     };
-    cuboRubik() {
+    
+    cuboRubik(float x, float y, float z) {
         cOri = { 0,2,6,8,17,19,23,25 };
         eOri = { 1,3,5,7,9,11,14,16,18,20,22,24 };
-
+        
         vector<vector<float>> centers{
             //Front
             {-0.5f, 0.5f, 0.5f}, //0  ufl
@@ -338,9 +339,24 @@ public:
             {0,1,0,1,1,0}, //26
         };
         for (int j = 0; j < centers.size(); j++) {
-            C.push_back(new Cubo(centers[j][0], centers[j][1], centers[j][2], 0.47f, color[j]));
+            C.push_back(new Cubo(centers[j][0]+x, centers[j][1]+y, centers[j][2]+z, 0.47f, color[j]));
         };
     }
+
+
+    
+    std::vector<std::vector<float>> movePoints(float x, float y, float z) {
+    
+        for(int j = 0; j < C.size();j++){
+            C[j]->Centro[0] += x;
+            C[j]->Centro[1] += y;
+            C[j]->Centro[2] += z;
+        }
+ 
+    }
+    
+
+
 
     ~cuboRubik() {
         cout<< "Why\n";
@@ -426,12 +442,15 @@ public:
             cOri[ubr] = cOri[urf];
             cOri[urf] = tOri;
 
-            
-
-
         }
 
        
+    }
+
+    void updateAccordingRoutine(string routine){
+        for(int i =0; i < routine.size(); i++){
+            routine[i];
+        }
     }
 
     void Down(bool p, int val) {
