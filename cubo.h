@@ -366,9 +366,6 @@ public:
         }
  
     }
-    
-
-
 
     ~cuboRubik() {
         cout<< "Why\n";
