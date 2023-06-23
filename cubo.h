@@ -31,10 +31,11 @@ public:
         vector<float>  O{ 1.0f, 0.5f, 0.0f }; //B
         vector<float>  B{ 0.0f, 0.0f, 1.0f }; //U
         vector<float>  G{ 0.0f, 1.0f, 0.0f }; //D
-        vector<float>  Y{ 1.0f, 1.0f, 0.0f }; //L
-        vector<float>  W{ 1.0f, 1.0f, 1.0f }; //R
+        vector<float>  Y{ 1.0f, 1.0f, 0.0f }; //R
+        vector<float>  W{ 1.0f, 1.0f, 1.0f }; //L
 
-        vector<vector<float>> color{ R, O, B, G, Y, W };
+        // vector<vector<float>> color{ R, O, B, G, Y, W };
+         vector<vector<float>> color{ B, R, O, G, Y, W };
 
         vector<vector<float>> coord{
             {x - tam,  y + tam, z + tam}, //0
@@ -67,7 +68,7 @@ public:
         }
     }
 
-    Cubo(float x, float y, float z, float tam, vector<bool> bCol) {
+    Cubo(float x, float y, float z, float tam, vector<bool> bCol, char centerColor) {
         tam = tam / 2;
         vector<float>  R{ 1.0f, 0.0f, 0.0f }; //F
         vector<float>  O{ 1.0f, 0.5f, 0.0f }; //B
@@ -77,7 +78,18 @@ public:
         vector<float>  W{ 1.0f, 1.0f, 1.0f }; //L
         vector<float>  a{ 0.0f, 0.0f, 0.0f };
 
-        vector<vector<float>> color{ R, O, B, G, Y, W,a };
+        map<char,vector<vector<float>>> colorPatron;
+
+        colorPatron['R'] = { R, O, B, G, Y, W, a };
+        colorPatron['O'] = { O, R, B, G, W, Y, a };
+        colorPatron['B'] = { B, G, O, R, Y, W, a };
+        colorPatron['G'] = { G, B, R, O, Y, W, a };
+        colorPatron['Y'] = { Y, W, B, G, O, R, a };
+        colorPatron['W'] = { W, Y, B, G, R, O, a };
+
+
+        // vector<vector<float>> color{ R, O, B, G, Y, W,a };
+        vector<vector<float>> color = colorPatron[centerColor];
 
         vector<vector<float>> coord{
             {x - tam,  y + tam, z + tam}, //0
@@ -270,7 +282,7 @@ public:
         {fl,ul,dl,bl}  //L
     };
     
-    cuboRubik(float x, float y, float z) {
+    cuboRubik(float x, float y, float z, char centerColor='R') {
         cOri = { 0,2,6,8,17,19,23,25 };
         eOri = { 1,3,5,7,9,11,14,16,18,20,22,24 };
         
@@ -339,7 +351,7 @@ public:
             {0,1,0,1,1,0}, //26
         };
         for (int j = 0; j < centers.size(); j++) {
-            C.push_back(new Cubo(centers[j][0]+x, centers[j][1]+y, centers[j][2]+z, 0.47f, color[j]));
+            C.push_back(new Cubo(centers[j][0]+x, centers[j][1]+y, centers[j][2]+z, 0.47f, color[j], centerColor));
         };
     }
 

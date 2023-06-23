@@ -279,7 +279,7 @@ void shuffleCube(cuboRubik &Cubo, string shufflestring){
     }
 }
 */
-cuboRubik cubo1(0, 0, 0);
+cuboRubik cubo1(0, 0, 0,'O');
 /*cuboRubik cubo2(2.0,0,0);
 cuboRubik cubo3(4.0,0,0);
 cuboRubik cubo4(6.0,0,0);
@@ -336,7 +336,8 @@ vector<vector<vector<string>>> mosaicMoves(6, vector<vector<string>>(5));
 void initializeMosaic()
 {
     std::vector<std::string> m = { "B'", "U" , "R" ,"'U'"};
-    mosaicMoves[0][1] = { "B'", "U" , "R'" ,"U'"};
+    mosaicMoves[1][0] = { "B'", "U" , "R'" ,"U'"};
+    mosaicMoves[1][1] = { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"};
 }
 
 int main()
@@ -476,9 +477,9 @@ int main()
 
         if (modoSolucion == '7' && modoRotacion == 'n')
         {
-            if (i < mosaicMoves[0][1].size())
+            if (i < mosaicMoves[1][1].size())
             {
-                modoRotacion = movs[ mosaicMoves[0][1][i] ];
+                modoRotacion = movs[ mosaicMoves[1][1][i] ];
                 cout<<modoRotacion<<" - ";
             }
             else
@@ -588,6 +589,7 @@ int main()
         cubo12.dibujar(ourShader);
         cubo13.dibujar(ourShader);*/
         // test
+        // cubo1.Rigth(true, 90);
 
         glfwSwapBuffers(window);
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust the sleep time as per your preference (e.g., 10 milliseconds).
