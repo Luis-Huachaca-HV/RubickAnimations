@@ -49,11 +49,11 @@ int modoCamara = 0;
 char modoSolucion = 'n';
 char modoRotacion = 'n';
 int rotloop = 90;
-vector<string> pasos;
+// vector<string> pasos;
 string pasoslib;
-vector<char> pasos2;
+// vector<char> pasos2;
 vector<string> pasos_solu;
-std::vector<std::string> replacedVector;
+// std::vector<std::string> replacedVector;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -279,9 +279,9 @@ void shuffleCube(cuboRubik &Cubo, string shufflestring){
     }
 }
 */
-cuboRubik cubo1(0, 0, 0,'O');
-/*cuboRubik cubo2(2.0,0,0);
-cuboRubik cubo3(4.0,0,0);
+cuboRubik cubo1(0, 0, 0,'W');
+cuboRubik cubo2(2.0,0,0,'O');
+/*cuboRubik cubo3(4.0,0,0);
 cuboRubik cubo4(6.0,0,0);
 cuboRubik cubo5(-2.0,0,0);
 cuboRubik cubo6(-4.0,0,0);
@@ -340,73 +340,12 @@ void initializeMosaic()
     mosaicMoves[1][1] = { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"};
 }
 
-int main()
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void loop(cuboRubik& cubo, Shader& ourShader, GLFWwindow * window )
 {
-    // cubo1.Up();
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    if (!gladLoadGL(glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-
-    glEnable(GL_DEPTH_TEST);
-
-    Shader ourShader(vertex_shader_text, fragment_shader_text);
-
-    ourShader.use();
-
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    ourShader.setMat4("projection", projection);
-
-    cubo1.init();
-    // cubo2.movePoints(0,0,0.3);
-    /*cubo2.init();
-    cubo3.init();
-    cubo4.init();
-    cubo5.init();
-    cubo6.init();
-    cubo7.init();
-    cubo8.init();
-    cubo9.init();
-    cubo10.init();
-    cubo11.init();
-    cubo12.init();
-    cubo13.init();*/
-    glPointSize(10);
-    string shuffleCube;
-    string solvecube;
-    initializeMap();
-    initializeMosaic();
-    // cout << "ingresa solvecube " << endl;
-    // cin >> solvecube;
-    // solvecube = "LFLFLFLLFFFL";
-    // pasos_solu = parseMovements("F F U F F U' F F L L U' L L U L L U B' U' B U U B' U B L U F' U' L' U L F L D F' U F' U' F D' L L B' U B U U");
-
-    // std::cout << "File content:\n" << textContent << std::endl;
-
     while (!glfwWindowShouldClose(window))
     {
 
@@ -425,38 +364,8 @@ int main()
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        /*if(modoCamara == 4){
-            solvecube = "LFLFLFLFL";
-            //if(modoRotacion != 'n'){
-                std::string key(1, solvecube[i]);
-                if (movs.find(key) != movs.end()) {
-
-                    movs[key]();
-                    //continue; // Call the function associated with the key
-                }
-                else {
-                    std::cout << "Invalid input" << std::endl;
-                    modoRotacion = 'n';
-                }
-            //}
-            cubo1.dibujar(ourShader);
-
-                //test
-
-                glfwSwapBuffers(window);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust the sleep time as per your preference (e.g., 10 milliseconds).
-                glfwPollEvents();
-            if (i >= solvecube.size()){
-                modoCamara =2;
-
-                }
-                if(modoRotacion == 'n'){
-                    i++;
-              //  }
-                }
-                continue;
-        }*/
-
+       
+        // rubik solver
         if (modoSolucion == '3' && modoRotacion == 'n')
         {
             if (i < pasos_solu.size())
@@ -475,6 +384,7 @@ int main()
             i++;
         }
 
+        // mosaic solver
         if (modoSolucion == '7' && modoRotacion == 'n')
         {
             if (i < mosaicMoves[1][1].size())
@@ -528,54 +438,55 @@ int main()
 
         if (modoRotacion == 'u')
         {
-            rotarUp(cubo1);
+            rotarUp(cubo);
         }
         else if (modoRotacion == 'o')
         {
-            rotarUpInv(cubo1);
+            rotarUpInv(cubo);
         }
         else if (modoRotacion == 'd')
         {
-            rotarDown(cubo1);
+            rotarDown(cubo);
         }
         else if (modoRotacion == 'm')
         {
-            rotarDownI(cubo1);
+            rotarDownI(cubo);
         }
         else if (modoRotacion == 'r')
         {
-            rotarRigth(cubo1);
+            rotarRigth(cubo);
         }
         else if (modoRotacion == 'h')
         {
-            rotarRigthI(cubo1);
+            rotarRigthI(cubo);
         }
         else if (modoRotacion == 'l')
         {
-            rotarLeft(cubo1);
+            rotarLeft(cubo);
         }
         else if (modoRotacion == 'k')
         {
-            rotarLeftI(cubo1);
+            rotarLeftI(cubo);
         }
         else if (modoRotacion == 'f')
         {
-            rotarFront(cubo1);
+            rotarFront(cubo);
         }
         else if (modoRotacion == 't')
         {
-            rotarFrontI(cubo1);
+            rotarFrontI(cubo);
         }
         else if (modoRotacion == 'b')
         {
-            rotarBack(cubo1);
+            rotarBack(cubo);
         }
         else if (modoRotacion == 'g')
         {
-            rotarBackI(cubo1);
+            rotarBackI(cubo);
         }
 
-        cubo1.dibujar(ourShader);
+        cubo.dibujar(ourShader);
+        // cubo2.dibujar(ourShader);
         /*cubo2.dibujar(ourShader);
         cubo3.dibujar(ourShader);
         cubo4.dibujar(ourShader);
@@ -595,6 +506,272 @@ int main()
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust the sleep time as per your preference (e.g., 10 milliseconds).
         glfwPollEvents();
     }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int main()
+{
+    // cubo1.Up();
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    if (!gladLoadGL(glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
+    glEnable(GL_DEPTH_TEST);
+
+    Shader ourShader(vertex_shader_text, fragment_shader_text);
+
+    ourShader.use();
+
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    ourShader.setMat4("projection", projection);
+
+    cubo1.init();
+    cubo2.init();
+    // cubo2.movePoints(0,0,0.3);
+    /*cubo2.init();
+    cubo3.init();
+    cubo4.init();
+    cubo5.init();
+    cubo6.init();
+    cubo7.init();
+    cubo8.init();
+    cubo9.init();
+    cubo10.init();
+    cubo11.init();
+    cubo12.init();
+    cubo13.init();*/
+    glPointSize(10);
+    string shuffleCube;
+    string solvecube;
+    initializeMap();
+    initializeMosaic();
+    // cout << "ingresa solvecube " << endl;
+    // cin >> solvecube;
+    // solvecube = "LFLFLFLLFFFL";
+    // pasos_solu = parseMovements("F F U F F U' F F L L U' L L U L L U B' U' B U U B' U B L U F' U' L' U L F L D F' U F' U' F D' L L B' U B U U");
+
+    // std::cout << "File content:\n" << textContent << std::endl;
+    
+
+
+    while (!glfwWindowShouldClose(window))
+    {
+
+        // if(modoSolucion != 'n'){
+        //       cout<<"\nMODO SOL: "<<modoSolucion;
+        // }
+        // if(modoRotacion != 'n'){
+        //       cout<<"\nMODO ROTACION: "<<modoRotacion;
+        // }
+
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        processInput(window);
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        // rubik solver
+        if (modoSolucion == '3' && modoRotacion == 'n')
+        {
+            if (i < pasos_solu.size())
+            {
+                modoRotacion = movs[pasos_solu[i]];
+                cout<<modoRotacion<<" - ";
+            }
+            else
+            {
+                std::cout << "Invalid input" << std::endl;
+                modoSolucion = 'n';
+                modoCamara = 2;
+                i = 0;
+                cout<<"\n";
+            }
+            i++;
+        }
+
+        // mosaic generator
+        if (modoSolucion == '7' && modoRotacion == 'n')
+        {
+            if (i < mosaicMoves[1][1].size())
+            {
+                modoRotacion = movs[ mosaicMoves[1][1][i] ];
+                cout<<modoRotacion<<" - ";
+            }
+            else
+            {
+                std::cout << "Invalid input" << std::endl;
+                modoSolucion = 'n';
+                // modoCamara = 2;
+                i = 0;
+                cout<<"\n";
+            }
+            i++;
+        }
+
+        // camera
+        if (modoCamara == 0)
+        {
+
+            ourShader.use();
+            glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            ourShader.setMat4("view", view);
+        }
+        if (modoCamara == 1)
+        {
+
+            ourShader.use();
+            const float radius = 5.0f;
+            float camX = sin(glfwGetTime()) * radius;
+            float camZ = cos(glfwGetTime()) * radius;
+            glm::mat4 view;
+            view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+            ourShader.setMat4("view", view);
+        }
+        if (modoCamara == 2)
+        {
+
+            ourShader.use();
+            const float radius = 5.0f;
+            float camY = sin(glfwGetTime()) * radius;
+            float camZ = cos(glfwGetTime()) * radius;
+
+            // std::cout << camY << " " << camZ << std::endl;
+            glm::mat4 view;
+            view = glm::lookAt(glm::vec3(0.0, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+            ourShader.setMat4("view", view);
+        }
+
+
+        // cube rotations
+        if (modoRotacion == 'u')
+        {
+            rotarUp(cubo1);
+            pasoslib += "U";
+        }
+        else if (modoRotacion == 'o')
+        {
+            rotarUpInv(cubo1);
+            pasoslib += "U'";
+        }
+        else if (modoRotacion == 'd')
+        {
+            rotarDown(cubo1);
+            pasoslib += "D";
+        }
+        else if (modoRotacion == 'm')
+        {
+            rotarDownI(cubo1);
+            pasoslib += "D'";
+        }
+        else if (modoRotacion == 'r')
+        {
+            rotarRigth(cubo1);
+            pasoslib += "R";
+        }
+        else if (modoRotacion == 'h')
+        {
+            rotarRigthI(cubo1);
+            pasoslib += "R'";
+        }
+        else if (modoRotacion == 'l')
+        {
+            rotarLeft(cubo1);
+            pasoslib += "L";
+        }
+        else if (modoRotacion == 'k')
+        {
+            rotarLeftI(cubo1);
+            pasoslib += "L'";
+        }
+        else if (modoRotacion == 'f')
+        {
+            rotarFront(cubo1);
+            pasoslib += "F";
+        }
+        else if (modoRotacion == 't')
+        {
+            rotarFrontI(cubo1);
+            pasoslib += "F'";
+        }
+        else if (modoRotacion == 'b')
+        {
+            rotarBack(cubo1);
+            pasoslib += "B";
+        }
+        else if (modoRotacion == 'g')
+        {
+            rotarBackI(cubo1);
+            pasoslib += "B'";
+        }
+
+        cubo1.dibujar(ourShader);
+        cubo2.dibujar(ourShader);
+        /*cubo2.dibujar(ourShader);
+        cubo3.dibujar(ourShader);
+        cubo4.dibujar(ourShader);
+        cubo5.dibujar(ourShader);
+        cubo6.dibujar(ourShader);
+        cubo7.dibujar(ourShader);
+        cubo8.dibujar(ourShader);
+        cubo9.dibujar(ourShader);
+        cubo10.dibujar(ourShader);
+        cubo11.dibujar(ourShader);
+        cubo12.dibujar(ourShader);
+        cubo13.dibujar(ourShader);*/
+        // test
+        // cubo1.Rigth(true, 90);
+
+        glfwSwapBuffers(window);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust the sleep time as per your preference (e.g., 10 milliseconds).
+        glfwPollEvents();
+    }
+
+
     // cout << "pasos " << pasoslib << endl;
     // pasoslib = "LFLFLFLLFFFL";
     // TestFromCMD();
@@ -635,6 +812,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+    //camera
     const float cameraSpeed = 0.05f;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
@@ -654,6 +832,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         modoCamara = 1;
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
         modoCamara = 2;
+
+    //rubik solver
     if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
     {
         pasos_solu = convertMoves(testFromCube(pasoslib));
@@ -666,17 +846,19 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         cout << endl;
         modoRotacion = 'n';
     }
-    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-    {
-        cubo1.deleteCubo();
-        cuboRubik cubo2(0, 0, 0);
-        cubo2.init();
-        pasoslib = "";
-        pasos_solu.clear();
-        cout << "deletes" << endl;
-        cubo1 = cubo2;
-        // cubo1.init();
-    }
+
+    // reset
+    // if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+    // {
+    //     cubo1.deleteCubo();
+    //     cuboRubik cubo2(0, 0, 0);
+    //     cubo2.init();
+    //     pasoslib = "";
+    //     pasos_solu.clear();
+    //     cout << "deletes" << endl;
+    //     cubo1 = cubo2;
+    //     // cubo1.init();
+    // }
     if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
     {
         // cubo2.dibujar();
@@ -685,84 +867,68 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     // modoCamara = 4;
     if (modoRotacion == 'n')
     {
-        // i++;
+        //Modo Solucion
         if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             modoSolucion = '3';
         if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
             modoSolucion = '7';
+        
+        //Modo Rotacion
         if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
         {
             modoRotacion = 'u';
-            pasos.push_back("U");
-            pasoslib += "U";
         }
         if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
         {
             modoRotacion = 'o';
-            pasos.push_back("U'");
-            pasoslib += "U'";
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
             modoRotacion = 'd';
-            pasos.push_back("D");
-            pasoslib += "D";
         }
         if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
         {
             modoRotacion = 'm';
-            pasos.push_back("D'");
-            pasoslib += "D'";
         }
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         {
             modoRotacion = 'r';
-            pasos.push_back("R");
-            pasoslib += "R";
         }
         if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
         {
             modoRotacion = 'h';
-            pasos.push_back("R'");
-            pasoslib += "R'";
+            
         }
 
         if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         {
             modoRotacion = 'l';
-            pasos.push_back("L");
-            pasoslib += "L";
+            
         }
         if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         {
             modoRotacion = 'k';
-            // pasos.push_back("R'");
-            pasos.push_back("L'");
-            pasoslib += "L'";
+            
         }
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         {
             modoRotacion = 'f';
-            pasos.push_back("F");
-            pasoslib += "F";
+            
         }
         if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
         {
             modoRotacion = 't';
-            pasos.push_back("F'");
-            pasoslib += "F'";
+            
         }
         if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
         {
             modoRotacion = 'b';
-            pasos.push_back("B");
-            pasoslib += "B";
+            
         }
         if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
         {
             modoRotacion = 'g';
-            pasos.push_back("B'");
-            pasoslib += "B'";
+            
         }
     }
 };
