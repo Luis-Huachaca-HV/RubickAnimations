@@ -627,8 +627,7 @@ int main()
     
     Grid[0] = new VirtualRubik(0, 0, 0,'W');
     Grid[1] = new VirtualRubik(2.0,0,0,'O');
-
-
+    
     Grid[0]->setMosaicPatron( { "B'", "U" , "R'" ,"U'"} );
     Grid[1]->setMosaicPatron( { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"} );
 
@@ -782,7 +781,8 @@ int main()
                 cubo->pasoslib += "B'";
             }
         }
-        Grid[1]->draw(ourShader);
+
+        // Grid[1]->draw(ourShader);
 
 
         /////////////////////////////////////////////////////////////////////////////
@@ -830,8 +830,8 @@ int main()
         //     cubo->draw();
         // }
 
-        // Grid[0]->draw(ourShader);
-        // Grid[1]->draw(ourShader);
+        Grid[0]->draw(ourShader);
+        Grid[1]->draw(ourShader);
         
         /*cubo2.dibujar(ourShader);
         cubo3.dibujar(ourShader);
