@@ -60,9 +60,13 @@ class VirtualRubik{
     vector<string> mosaicMoves;
     cuboRubik* Cubo;
     Shader* ourShader;
+
+    // float theta = -5*(PI/180) ;
+    // float thetaI = 5*(PI/180) ;
     
 
     VirtualRubik(float x, float y, float z, char centerColor){
+
         modoSolucion = 'n';
         modoRotacion = 'n';
         rotloop = 90;
@@ -90,7 +94,7 @@ class VirtualRubik{
         rotloop -= 5;
         Cubo->Up(0, 1);
         // cout << "theta u: " <<theta << endl;
-        theta = -5 * (PI / 180);
+        Cubo->theta = -5 * (PI / 180);
 
         if (rotloop == 0)
         {
@@ -103,7 +107,7 @@ class VirtualRubik{
     {
         rotloop -= 5;
         // cout << "theta ui: " <<theta << endl;
-        theta = 5 * (PI / 180);
+        Cubo->theta = 5 * (PI / 180);
 
         Cubo->UpI(0, -1);
         if (rotloop == 0)
@@ -383,7 +387,7 @@ void initializeMap()
 
 
 const int row = 1;
-const int col = 2;
+const int col = 1;
 vector<VirtualRubik*> Grid(row*col);
 vector<bool> animations(Grid.size(),false);
 
@@ -625,12 +629,13 @@ int main()
 
     
     
-    Grid[0] = new VirtualRubik(0, 0, 0,'W');
-    Grid[1] = new VirtualRubik(2.0,0,0,'O');
+    Grid[0] = new VirtualRubik(3.0, 1.0, 0,'O');
+    // Grid[1] = new VirtualRubik(2.0,0,0,'O');
     
-    Grid[0]->setMosaicPatron( { "B'", "U" , "R'" ,"U'"} );
-    Grid[1]->setMosaicPatron( { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"} );
-
+    // Grid[0]->setMosaicPatron( { "B'", "U" , "R'" ,"U'"} );
+    // Grid[1]->setMosaicPatron( { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"} );
+    Grid[0]->setMosaicPatron( { "B"} );
+    // Grid[1]->setMosaicPatron( { "U"} );
 
     // cout << "ingresa solvecube " << endl;
     // cin >> solvecube;
@@ -647,7 +652,7 @@ int main()
     // ths[0] = thread(listenActions,0,Grid.size()-1);
 
     int init = 0;
-    int end = 1;
+    int end = 0;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -831,7 +836,7 @@ int main()
         // }
 
         Grid[0]->draw(ourShader);
-        Grid[1]->draw(ourShader);
+        // Grid[1]->draw(ourShader);
         
         /*cubo2.dibujar(ourShader);
         cubo3.dibujar(ourShader);
@@ -957,7 +962,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
             // triggerModoSolucion(0,1,'7');
             Grid[0]->modoSolucion= '7';
-            Grid[1]->modoSolucion= '7';
+            // Grid[1]->modoSolucion= '7';
         }
             
         

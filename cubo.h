@@ -6,7 +6,8 @@
 #include <map>
 #include <iostream>
 #include <math.h>
-
+#include <cmath>
+#include <algorithm>
 #include "Matrices.h"
 #include "Shaders/shader_s.h"
 using namespace std;
@@ -16,11 +17,14 @@ using namespace std;
 class Cubo {
 public:
 
+
     vector<float> cubel;
     unsigned int VAO, VBO, EBO;
     vector<float> Centro;
 
     Cubo(float x, float y, float z, float tam) {
+
+    
         
         Centro.push_back(x);
         Centro.push_back(y);
@@ -255,6 +259,24 @@ public:
     enum corner { ufl, urf, dlf, dfr, ulb, ubr, dbl, drb}; //0-8
     enum edge { uf, fl, fr, df, ul, ur, dl, dr, ub, bl, br, db };
     //corner cPos[8] = { urf, ubr, dlf, dfr, ulb, ufl, drb, dbl };
+
+    float Ry[sizeof(_Ry) / sizeof(_Ry[0])];
+    float RyI[sizeof(_RyI) / sizeof(_RyI[0])];
+    float Ry2[sizeof(_Ry2) / sizeof(_Ry2[0])];
+    float Ry2I[sizeof(_Ry2I) / sizeof(_Ry2I[0])];
+
+    float Rx[sizeof(_Rx) / sizeof(_Rx[0])];
+    float RxI[sizeof(_RxI) / sizeof(_RxI[0])];
+    float Rx2[sizeof(_Rx2) / sizeof(_Rx2[0])];
+    float Rx2I[sizeof(_Rx2I) / sizeof(_Rx2I[0])];
+
+    float Rz[sizeof(_Rz) / sizeof(_Rz[0])];
+    float RzI[sizeof(_RzI) / sizeof(_RzI[0])];
+    float Rz2[sizeof(_Rz2) / sizeof(_Rz2[0])];
+    float Rz2I[sizeof(_Rz2I) / sizeof(_Rz2I[0])];
+
+    float theta = -5*(PI/180) ;
+    float thetaI = 5*(PI/180) ;
     
 
     vector< vector<int>> camadas{
@@ -281,8 +303,31 @@ public:
         {fr,ur,dr,br}, //R
         {fl,ul,dl,bl}  //L
     };
+
+    void theta_inv(){
+        theta = -theta ;
+    }
     
     cuboRubik(float x, float y, float z, char centerColor='R') {
+
+        ///////////////////////////////
+    
+        std::copy(std::begin(_Ry), std::end(_Ry), Ry);
+        std::copy(std::begin(_RyI), std::end(_RyI), RyI);
+        std::copy(std::begin(_Ry2), std::end(_Ry2), Ry2);
+        std::copy(std::begin(_Ry2I), std::end(_Ry2I), Ry2I);
+        std::copy(std::begin(_Rx), std::end(_Rx), Rx);
+        std::copy(std::begin(_RxI), std::end(_RxI), RxI);
+        std::copy(std::begin(_Rx2), std::end(_Rx2), Rx2);
+        std::copy(std::begin(_Rx2I), std::end(_Rx2I), Rx2I);
+        std::copy(std::begin(_Rz), std::end(_Rz), Rz);
+        std::copy(std::begin(_RzI), std::end(_RzI), RzI);
+        std::copy(std::begin(_Rz2), std::end(_Rz2), Rz2);
+        std::copy(std::begin(_Rz2I), std::end(_Rz2I), Rz2I);
+
+        ////////////////////////////////
+
+
         cOri = { 0,2,6,8,17,19,23,25 };
         eOri = { 1,3,5,7,9,11,14,16,18,20,22,24 };
         
