@@ -386,21 +386,88 @@ void initializeMap()
 // vector<vector<vector<string>>> mosaicMoves(6, vector<vector<string>>(5));
 
 
-const int row = 1;
-const int col = 1;
+const int row = 6;
+const int col = 5;
 vector<VirtualRubik*> Grid(row*col);
 vector<bool> animations(Grid.size(),false);
 
-// void initGrid(){
-//     Grid[1][0] = new VirtualRubik(0, 0, 0,'W');
-//     Grid[1][0] = new VirtualRubik(2.0,0,0,'O');
-// }
+void initGrid(){
+     Grid[0] = new VirtualRubik(-3, 3, 0,'W'); //00
+    Grid[1] = new VirtualRubik(-1.5, 3, 0,'R'); //01
+    Grid[2] = new VirtualRubik(0, 3, 0,'R'); //02
+    Grid[3] = new VirtualRubik(1.5, 3, 0,'W'); //03
+    Grid[4] = new VirtualRubik(3, 3, 0,'W'); //04
 
-// void initializeMosaic()
-// {
-//     Grid[1][0]->setMosaicPatron( { "B'", "U" , "R'" ,"U'"} );
-//     Grid[1][1]->setMosaicPatron( { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"} );
-// }
+    Grid[5] = new VirtualRubik(-3, 1.5, 0,'W'); //10
+    Grid[6] = new VirtualRubik(-1.5, 1.5, 0,'O'); //11
+    Grid[7] = new VirtualRubik(0, 1.5, 0,'Y'); //12
+    Grid[8] = new VirtualRubik(1.5, 1.5, 0,'Y'); //13
+    Grid[9] = new VirtualRubik(3, 1.5, 0,'W'); //14
+
+    Grid[10] = new VirtualRubik(-3, 0, 0,'W'); //20
+    Grid[11] = new VirtualRubik(-1.5, 0, 0,'Y'); //21
+    Grid[12] = new VirtualRubik(0, 0, 0,'Y'); //22
+    Grid[13] = new VirtualRubik(1.5, 0, 0,'W'); //23
+    Grid[14] = new VirtualRubik(3, 0, 0,'W'); //24
+
+    Grid[15] = new VirtualRubik(-3, -1.5, 0,'R'); //30
+    Grid[16] = new VirtualRubik(-1.5, -1.5, 0,'R'); //31
+    Grid[17] = new VirtualRubik(0, -1.5, 0,'B'); //32
+    Grid[18] = new VirtualRubik(1.5, -1.5, 0,'R'); //33
+    Grid[19] = new VirtualRubik(3, -1.5, 0,'W'); //34
+
+    Grid[20] = new VirtualRubik(-3, -3, 0,'Y'); //40
+    Grid[21] = new VirtualRubik(-1.5, -3, 0,'B'); //41
+    Grid[22] = new VirtualRubik(0, -3, 0,'B'); //42
+    Grid[23] = new VirtualRubik(1.5, -3, 0,'B'); //43
+    Grid[24] = new VirtualRubik(3, -3, 0,'W'); //44
+
+    Grid[25] = new VirtualRubik(-3, -4.5, 0,'O'); //50
+    Grid[26] = new VirtualRubik(-1.5, -4.5, 0,'O'); //51
+    Grid[27] = new VirtualRubik(0, -4.5, 0,'W'); //52
+    Grid[28] = new VirtualRubik(1.5, -4.5, 0,'O'); //53
+    Grid[29] = new VirtualRubik(3, -4.5, 0,'W'); //54
+}
+
+void initializeMosaic()
+{
+    Grid[0]->setMosaicPatron( {} ); //00
+    Grid[1]->setMosaicPatron( { "U'", "B'", "D", "U'", "L", "D'", "U" } ); //01
+    Grid[2]->setMosaicPatron( {"U'"} ); //02
+    Grid[3]->setMosaicPatron( {"D'"} ); //03
+    Grid[4]->setMosaicPatron( {} ); //04
+    
+    Grid[5]->setMosaicPatron( {  "B'", "U", "R'", "U'" }); //10
+    Grid[6]->setMosaicPatron( { "B'", "U'", "L", "U", "B'", "U", "D'", "R'", "U'", "D" }); //11
+    Grid[7]->setMosaicPatron( { "B'", "D'", "R", "D" }); //12
+    Grid[8]->setMosaicPatron( { "L", "B'", "L'", "B'", "L", "U", "U", "L'", "B", "B", "U'", "B", "U" } ); //13
+    Grid[9]->setMosaicPatron( { "L", "B", "L'", "B", "L", "B'", "L'" } ); //14
+
+
+    Grid[10]->setMosaicPatron( {} ); //20
+    Grid[11]->setMosaicPatron( { "R", "D", "R'", "B", "D", "B", "D'", "U'", "D", "L", "U", "D'", "L'", "B", "L" } ); //21
+    Grid[12]->setMosaicPatron( { "B'", "U'", "B", "U", "D", "D", "B'", "B'", "D'", "B", "D", "B'", "D'" }); //22
+    Grid[13]->setMosaicPatron( { "U", "U", "L", "L", "U'", "R", "D'", "R'" }); //23
+    Grid[14]->setMosaicPatron( {} ); //24
+
+    Grid[15]->setMosaicPatron({ "U", "F'", "L'", "D'", "L", "B'", "R'", "L", "U", "U", "L'", "R" }); //30---------
+    Grid[16]->setMosaicPatron({ "R'", "B'", "L'", "R", "D'", "L", "R'", "R'", "B", "R" }); //31
+    Grid[17]->setMosaicPatron({ "R'", "F'", "L'", "B'", "F", "R" }); //32
+    Grid[18]->setMosaicPatron( { "L", "B", "B", "L'", "R'", "B", "R" } ); //33
+    Grid[19]->setMosaicPatron( { "B", "U'", "L", "U", "L", "B", "B", "L'" } ); //34
+
+    Grid[20]->setMosaicPatron( { "D", "D", "L", "B", "B", "L", "B'", "L'", "B", "L" }); //40
+    Grid[21]->setMosaicPatron( { "L'", "B", "L" } ); //41 ----
+    Grid[22]->setMosaicPatron( { "R", "D", "R'" } ); //42
+    Grid[23]->setMosaicPatron( { "L", "R'", "U", "U", "R", "U'", "L'", "B'", "U", "R", "R", "U'" } ); //43
+    Grid[24]->setMosaicPatron( { "D", "L", "L", "D'", "U'", "L", "U", "L'" } ); //44
+
+    Grid[25]->setMosaicPatron( { "D'", "U", "B", "U'", "D", "L", "D'", "U", "B'", "U'", "B", "U" } ); //50
+    Grid[26]->setMosaicPatron( { "B'", "D'", "R'" } ); //51 ------
+    Grid[27]->setMosaicPatron( {} ); //52
+    Grid[28]->setMosaicPatron( { "D'"} ); //53
+    Grid[29]->setMosaicPatron( { "B'", "U'", "D", "L", "U", "D'" } ); //54
+}
 
 bool animationsFinished(int init=0, int end=Grid.size()-1){
     bool res = true;
@@ -622,37 +689,20 @@ int main()
     string shuffleCube;
     string solvecube;
 
-
     // initGrid()
     initializeMap();
     // initializeMosaic();
 
-    
-    
-    Grid[0] = new VirtualRubik(3.0, 1.0, 0,'O');
-    // Grid[1] = new VirtualRubik(2.0,0,0,'O');
-    
-    // Grid[0]->setMosaicPatron( { "B'", "U" , "R'" ,"U'"} );
-    // Grid[1]->setMosaicPatron( { "B'", "U'" , "L" ,"U", "B'", "U", "D'", "R'", "U'", "D"} );
-    Grid[0]->setMosaicPatron( { "B"} );
-    // Grid[1]->setMosaicPatron( { "U"} );
-
-    // cout << "ingresa solvecube " << endl;
-    // cin >> solvecube;
-    // solvecube = "LFLFLFLLFFFL";
-    // pasos_solu = parseMovements("F F U F F U' F F L L U' L L U L L U B' U' B U U B' U B L U F' U' L' U L F L D F' U F' U' F D' L L B' U B U U");
-
-    // std::cout << "File content:\n" << textContent << std::endl;
-
+    initGrid();
+    initializeMosaic();
 
     //threads
-
     // vector<thread> ths(1);
-
     // ths[0] = thread(listenActions,0,Grid.size()-1);
 
+
     int init = 0;
-    int end = 0;
+    int end = Grid.size() - 1;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -831,11 +881,11 @@ int main()
 
         // cubo1.dibujar(ourShader);
         // cubo2.dibujar(ourShader);
-        // for(auto cubo :Grid){
-        //     cubo->draw();
-        // }
+        for(auto cubo :Grid){
+            cubo->draw(ourShader);
+        }
 
-        Grid[0]->draw(ourShader);
+        // Grid[0]->draw(ourShader);
         // Grid[1]->draw(ourShader);
         
         /*cubo2.dibujar(ourShader);
@@ -960,8 +1010,12 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             // triggerModoSolucion(0,1,'3');
         }
         if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
+
+            for(int i=0; i< Grid.size(); i++){
+                Grid[i]->modoSolucion= '7';
+            }
             // triggerModoSolucion(0,1,'7');
-            Grid[0]->modoSolucion= '7';
+            // Grid[0]->modoSolucion= '7';
             // Grid[1]->modoSolucion= '7';
         }
             
