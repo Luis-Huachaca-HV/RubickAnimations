@@ -20,27 +20,27 @@
 #include <string>
 
 const char *vertex_shader_text =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
-    "uniform mat4 model;\n"
-    "uniform mat4 view;\n"
-    "uniform mat4 projection;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
-    "    ourColor = aColor;\n"
-    "}\n";
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 aColor;\n"
+        "out vec3 ourColor;\n"
+        "uniform mat4 model;\n"
+        "uniform mat4 view;\n"
+        "uniform mat4 projection;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+        "    ourColor = aColor;\n"
+        "}\n";
 
 const char *fragment_shader_text =
-    "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "    FragColor = vec4(ourColor, 1.0);\n"
-    "}\n";
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "in vec3 ourColor;\n"
+        "void main()\n"
+        "{\n"
+        "    FragColor = vec4(ourColor, 1.0);\n"
+        "}\n";
 
 using namespace std;
 
@@ -48,7 +48,7 @@ using namespace std;
 ////############## CLASS STATE //////////////////////
 
 class VirtualRubik{
-    public:
+public:
 
     char modoSolucion;
     char modoRotacion;
@@ -63,7 +63,7 @@ class VirtualRubik{
 
     // float theta = -5*(PI/180) ;
     // float thetaI = 5*(PI/180) ;
-    
+
 
     VirtualRubik(float x, float y, float z, char centerColor){
 
@@ -78,7 +78,7 @@ class VirtualRubik{
     }
 
     void setMosaicPatron(vector<string> mosaicMoves_){
-        
+
         for(const auto& action : mosaicMoves_){
             mosaicMoves.push_back(action);
         }
@@ -88,7 +88,7 @@ class VirtualRubik{
         Cubo->dibujar(ourShader);
     }
 
-    
+
     void rotarUp()
     {
         rotloop -= 5;
@@ -235,6 +235,7 @@ class VirtualRubik{
 
 
 int modoCamara = 0;
+bool zoomComplete = false;
 
 // char modoSolucion = 'n';
 // char modoRotacion = 'n';
@@ -392,7 +393,7 @@ vector<VirtualRubik*> Grid(row*col);
 vector<bool> animations(Grid.size(),false);
 
 void initGrid(){
-     Grid[0] = new VirtualRubik(-3, 3, 0,'W'); //00
+    Grid[0] = new VirtualRubik(-3, 3, 0,'W'); //00
     Grid[1] = new VirtualRubik(-1.5, 3, 0,'R'); //01
     Grid[2] = new VirtualRubik(0, 3, 0,'R'); //02
     Grid[3] = new VirtualRubik(1.5, 3, 0,'W'); //03
@@ -436,7 +437,7 @@ void initializeMosaic()
     Grid[2]->setMosaicPatron( {"U'"} ); //02
     Grid[3]->setMosaicPatron( {"D'"} ); //03
     Grid[4]->setMosaicPatron( {} ); //04
-    
+
     Grid[5]->setMosaicPatron( {  "B'", "U", "R'", "U'" }); //10
     Grid[6]->setMosaicPatron( { "B'", "U'", "L", "U", "B'", "U", "D'", "R'", "U'", "D" }); //11
     Grid[7]->setMosaicPatron( { "B'", "D'", "R", "D" }); //12
@@ -494,13 +495,13 @@ void triggerModoRotacion(int init=0, int end=Grid.size()-1,char modoRotacion_='a
 
 void listenActions(int init, int end){
 
-    
+
     VirtualRubik* cubo = nullptr;
 
     while(true)
     {
         // cout<<"\nhola";
-        //iterate and check state rubiks cubes 
+        //iterate and check state rubiks cubes
         for(int i=init; i <= end ; i++)
         {
 
@@ -546,7 +547,7 @@ void listenActions(int init, int end){
                 cubo->iter++;
             }
 
-            
+
 
             // cube rotations
             if (cubo->modoRotacion == 'u')
@@ -611,21 +612,14 @@ void listenActions(int init, int end){
             }
         }
 
-      
+
 
     }
 
-    
 
-    
+
+
 }
-
-
-
-
-
-
-
 
 
 
@@ -725,7 +719,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /////////////////////////////////////////////////////////////////////////////
-        
+
 
         for(int i=init; i <= end ; i++)
         {
@@ -772,7 +766,7 @@ int main()
                 cubo->iter++;
             }
 
-            
+
 
             // cube rotations
             if (cubo->modoRotacion == 'u')
@@ -843,7 +837,7 @@ int main()
         /////////////////////////////////////////////////////////////////////////////
 
 
-       
+
         // camera
         if (modoCamara == 0)
         {
@@ -876,8 +870,52 @@ int main()
             view = glm::lookAt(glm::vec3(0.0, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
             ourShader.setMat4("view", view);
         }
+        if (modoCamara == 3) {
+            const float minCamZ = 2.0f;
+            const float maxCamZ = 20.0f;
+            const float radius = 20.0f;
 
-        
+            const float rotationSpeed = 0.70f;
+            const float cameraSpeed = 0.20f;
+            float initialAngle = 0.0f;
+            float currentTime = glfwGetTime();
+            if (!zoomComplete) {
+            
+                if (cameraPos.z < maxCamZ) {
+                    cameraPos.z += cameraSpeed;
+                } else {
+                    zoomComplete = true;
+                    //std::cout << "Initial angle: " << initialAngle << std::endl;
+                    //std::cout << "Camera position: (" << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << ")" << std::endl;
+                    //std::cout << "zoomComplete!"<<endl;
+                }
+                // Clamp the camZ value to the minimum and maximum values
+                cameraPos.z = glm::clamp(cameraPos.z, minCamZ, maxCamZ);
+
+                glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+                ourShader.use();
+                ourShader.setMat4("view", view);
+            } else {
+                //update angle
+                float angle = currentTime * rotationSpeed;
+
+
+                //updating camera
+                float camX = sin(angle) * radius;
+                float camY = cos(angle) * radius;
+                cameraPos.x = camX;
+                cameraPos.y = camY;
+
+                //std::cout << "Camera position: (" << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << ")" << std::endl;
+                //std::cout << "Angle: " << angle << std::endl;
+
+
+                glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+                ourShader.setMat4("view", view);
+            }
+        }
 
         // cubo1.dibujar(ourShader);
         // cubo2.dibujar(ourShader);
@@ -887,7 +925,7 @@ int main()
 
         // Grid[0]->draw(ourShader);
         // Grid[1]->draw(ourShader);
-        
+
         /*cubo2.dibujar(ourShader);
         cubo3.dibujar(ourShader);
         cubo4.dibujar(ourShader);
@@ -969,7 +1007,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         modoCamara = 1;
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
         modoCamara = 2;
-
+    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS){
+        modoCamara = 3;
+        cameraPos = glm::vec3(0.0f,0.0f,3.0f);
+    }
     //rubik solver
     // if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
     // {
@@ -1005,78 +1046,78 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     // modoCamara = 4;
     // if (!animationsFinished())
     // {
-        //Modo Solucion
-        if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS){
-            // triggerModoSolucion(0,1,'3');
-        }
-        if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
+    //Modo Solucion
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS){
+        // triggerModoSolucion(0,1,'3');
+    }
+    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
 
-            for(int i=0; i< Grid.size(); i++){
-                Grid[i]->modoSolucion= '7';
-            }
-            // triggerModoSolucion(0,1,'7');
-            // Grid[0]->modoSolucion= '7';
-            // Grid[1]->modoSolucion= '7';
+        for(int i=0; i< Grid.size(); i++){
+            Grid[i]->modoSolucion= '7';
         }
-            
-        
-        //Modo Rotacion
-        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-        {
-            triggerModoRotacion('u');
-        }
-        if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-        {
-            triggerModoRotacion('o');
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        {
-            triggerModoRotacion('d');
-        }
-        if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-        {
-            triggerModoRotacion('m');
-        }
-        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        {
-            triggerModoRotacion('r');
-        }
-        if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-        {
-            triggerModoRotacion('h');
-            
-        }
+        // triggerModoSolucion(0,1,'7');
+        // Grid[0]->modoSolucion= '7';
+        // Grid[1]->modoSolucion= '7';
+    }
 
-        if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        {
-            triggerModoRotacion('l');
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        {
-            triggerModoRotacion('k');
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        {
-            triggerModoRotacion('f');
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-        {
-            triggerModoRotacion('t');
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-        {
-            triggerModoRotacion('b');
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        {
-            triggerModoRotacion('g');
-            
-        }
+
+    //Modo Rotacion
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    {
+        triggerModoRotacion('u');
+    }
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    {
+        triggerModoRotacion('o');
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        triggerModoRotacion('d');
+    }
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    {
+        triggerModoRotacion('m');
+    }
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        triggerModoRotacion('r');
+    }
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+    {
+        triggerModoRotacion('h');
+
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    {
+        triggerModoRotacion('l');
+
+    }
+    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+    {
+        triggerModoRotacion('k');
+
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+    {
+        triggerModoRotacion('f');
+
+    }
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+    {
+        triggerModoRotacion('t');
+
+    }
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+    {
+        triggerModoRotacion('b');
+
+    }
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+    {
+        triggerModoRotacion('g');
+
+    }
     // }
 };
 
