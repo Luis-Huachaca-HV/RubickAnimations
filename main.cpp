@@ -451,7 +451,7 @@ void initializeMosaic()
     Grid[13]->setMosaicPatron( { "U", "U", "L", "L", "U'", "R", "D'", "R'" }); //23
     Grid[14]->setMosaicPatron( {} ); //24
 
-    Grid[15]->setMosaicPatron({ "U", "F'", "L'", "D'", "L", "B'", "R'", "L", "U", "U", "L'", "R" }); //30---------
+    Grid[15]->setMosaicPatron({ "U", "F'", "L'", "D'", "L", "B'", "R'", "L", "U", "U", "R", "B", "L" }); //30---------
     Grid[16]->setMosaicPatron({ "R'", "B'", "L'", "R", "D'", "L", "R'", "R'", "B", "R" }); //31
     Grid[17]->setMosaicPatron({ "R'", "F'", "L'", "B'", "F", "R" }); //32
     Grid[18]->setMosaicPatron( { "L", "B", "B", "L'", "R'", "B", "R" } ); //33
@@ -464,7 +464,7 @@ void initializeMosaic()
     Grid[24]->setMosaicPatron( { "D", "L", "L", "D'", "U'", "L", "U", "L'" } ); //44
 
     Grid[25]->setMosaicPatron( { "D'", "U", "B", "U'", "D", "L", "D'", "U", "B'", "U'", "B", "U" } ); //50
-    Grid[26]->setMosaicPatron( { "B'", "D'", "R'" } ); //51 ------
+    Grid[26]->setMosaicPatron( { "B'", "D'", "R" } ); //51 ------
     Grid[27]->setMosaicPatron( {} ); //52
     Grid[28]->setMosaicPatron( { "D'"} ); //53
     Grid[29]->setMosaicPatron( { "B'", "U'", "D", "L", "U", "D'" } ); //54
