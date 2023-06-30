@@ -493,7 +493,7 @@ void triggerModoRotacion(int init=0, int end=Grid.size()-1,char modoRotacion_='a
 
 /// THREADS
 
-void listenActions(int init, int end){
+void listenActions(int init, int end,Shader &ourShader){
 
 
     VirtualRubik* cubo = nullptr;
@@ -529,15 +529,18 @@ void listenActions(int init, int end){
             // mosaic generator
             if (cubo->modoSolucion == '7' && cubo->modoRotacion == 'n')
             {
-                cout<<"\nSOL 7777";
+                if(cubo->iter == 0){
+                    cout<<"\nMOD Mosaic:\n";
+                }
+
                 if (cubo->iter < cubo->mosaicMoves.size())
                 {
                     cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
-                    cout<<cubo->modoRotacion<<" - ";
+                    cout<<cubo->modoRotacion<<" -> ";
                 }
                 else
                 {
-                    std::cout << "Invalid input" << std::endl;
+                    std::cout << "\nAnimation Finished!!\n" << std::endl;
                     cubo->modoSolucion = 'n';
                     // modoCamara = 2;
                     cubo->iter = 0;
@@ -549,68 +552,73 @@ void listenActions(int init, int end){
 
 
 
-            // cube rotations
-            if (cubo->modoRotacion == 'u')
-            {
-                cubo->rotarUp();
-                cubo->pasoslib += "U";
-            }
-            else if (cubo->modoRotacion == 'o')
-            {
-                cubo->rotarUpInv();
-                cubo->pasoslib += "U'";
-            }
-            else if (cubo->modoRotacion == 'd')
-            {
-                cubo->rotarDown();
-                cubo->pasoslib += "D";
-            }
-            else if (cubo->modoRotacion == 'm')
-            {
-                cubo->rotarDownI();
-                cubo->pasoslib += "D'";
-            }
-            else if (cubo->modoRotacion == 'r')
-            {
-                cubo->rotarRigth();
-                cubo->pasoslib += "R";
-            }
-            else if (cubo->modoRotacion == 'h')
-            {
-                cubo->rotarRigthI();
-                cubo->pasoslib += "R'";
-            }
-            else if (cubo->modoRotacion == 'l')
-            {
-                cubo->rotarLeft();
-                cubo->pasoslib += "L";
-            }
-            else if (cubo->modoRotacion == 'k')
-            {
-                cubo->rotarLeftI();
-                cubo->pasoslib += "L'";
-            }
-            else if (cubo->modoRotacion == 'f')
-            {
-                cubo->rotarFront();
-                cubo->pasoslib += "F";
-            }
-            else if (cubo->modoRotacion == 't')
-            {
-                cubo->rotarFrontI();
-                cubo->pasoslib += "F'";
-            }
-            else if (cubo->modoRotacion == 'b')
-            {
-                cubo->rotarBack();
-                cubo->pasoslib += "B";
-            }
-            else if (cubo->modoRotacion == 'g')
-            {
-                cubo->rotarBackI();
-                cubo->pasoslib += "B'";
-            }
+        //     // cube rotations
+        //     if (cubo->modoRotacion == 'u')
+        //     {
+        //         cubo->rotarUp();
+        //         cubo->pasoslib += "U";
+        //     }
+        //     else if (cubo->modoRotacion == 'o')
+        //     {
+        //         cubo->rotarUpInv();
+        //         cubo->pasoslib += "U'";
+        //     }
+        //     else if (cubo->modoRotacion == 'd')
+        //     {
+        //         cubo->rotarDown();
+        //         cubo->pasoslib += "D";
+        //     }
+        //     else if (cubo->modoRotacion == 'm')
+        //     {
+        //         cubo->rotarDownI();
+        //         cubo->pasoslib += "D'";
+        //     }
+        //     else if (cubo->modoRotacion == 'r')
+        //     {
+        //         cubo->rotarRigth();
+        //         cubo->pasoslib += "R";
+        //     }
+        //     else if (cubo->modoRotacion == 'h')
+        //     {
+        //         cubo->rotarRigthI();
+        //         cubo->pasoslib += "R'";
+        //     }
+        //     else if (cubo->modoRotacion == 'l')
+        //     {
+        //         cubo->rotarLeft();
+        //         cubo->pasoslib += "L";
+        //     }
+        //     else if (cubo->modoRotacion == 'k')
+        //     {
+        //         cubo->rotarLeftI();
+        //         cubo->pasoslib += "L'";
+        //     }
+        //     else if (cubo->modoRotacion == 'f')
+        //     {
+        //         cubo->rotarFront();
+        //         cubo->pasoslib += "F";
+        //     }
+        //     else if (cubo->modoRotacion == 't')
+        //     {
+        //         cubo->rotarFrontI();
+        //         cubo->pasoslib += "F'";
+        //     }
+        //     else if (cubo->modoRotacion == 'b')
+        //     {
+        //         cubo->rotarBack();
+        //         cubo->pasoslib += "B";
+        //     }
+        //     else if (cubo->modoRotacion == 'g')
+        //     {
+        //         cubo->rotarBackI();
+        //         cubo->pasoslib += "B'";
+        //     }
         }
+
+
+        // for(auto cubo_ :Grid){
+        //     cubo_->draw(ourShader);
+        // }
 
 
 
@@ -671,21 +679,7 @@ int main()
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     ourShader.setMat4("projection", projection);
 
-    // cubo1.init();
-    // cubo2.init();
-    // cubo2.movePoints(0,0,0.3);
-    /*cubo2.init();
-    cubo3.init();
-    cubo4.init();
-    cubo5.init();
-    cubo6.init();
-    cubo7.init();
-    cubo8.init();
-    cubo9.init();
-    cubo10.init();
-    cubo11.init();
-    cubo12.init();
-    cubo13.init();*/
+   
     glPointSize(10);
     string shuffleCube;
     string solvecube;
@@ -699,11 +693,12 @@ int main()
 
     //threads
     // vector<thread> ths(1);
-    // ths[0] = thread(listenActions,0,Grid.size()-1);
-
 
     int init = 0;
     int end = Grid.size() - 1;
+
+    // ths[0] = thread(listenActions,init,end,ref(ourShader));
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -755,15 +750,18 @@ int main()
             // mosaic generator
             if (cubo->modoSolucion == '7' && cubo->modoRotacion == 'n')
             {
-                cout<<"\nSOL 7777";
+                // if(cubo->iter == 0){
+                //     cout<<"\nMOD Mosaic:\n";
+                // }
+                cout<<"\nCubo["<<i<<"]: ";
                 if (cubo->iter < cubo->mosaicMoves.size())
                 {
                     cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
-                    cout<<cubo->modoRotacion<<" - ";
+                    cout<<cubo->modoRotacion<<" ";
                 }
                 else
                 {
-                    std::cout << "Invalid input" << std::endl;
+                    std::cout << " Animation Finished!!" << std::endl;
                     cubo->modoSolucion = 'n';
                     // modoCamara = 2;
                     cubo->iter = 0;
