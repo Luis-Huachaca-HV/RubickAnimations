@@ -890,8 +890,8 @@ int main()
             const float maxCamZ = 20.0f;
             const float radius = 20.0f;
 
-            const float rotationSpeed = 0.70f;
-            const float cameraSpeed = 0.20f;
+            const float rotationSpeed = 0.55f;
+            const float cameraSpeed = 0.07f;
             float initialAngle = 0.0f;
             float currentTime = glfwGetTime();
             if (!zoomComplete) {
@@ -915,11 +915,11 @@ int main()
                 ourShader.use();
 
                 const float radiusYZ = 20.0f;
-                float camY = sin(glfwGetTime()) * radiusYZ;
-                float camZ = cos(glfwGetTime()) * radiusYZ;
+                float camY = sin(glfwGetTime()*rotationSpeed) * radiusYZ;
+                float camZ = cos(glfwGetTime()*rotationSpeed) * radiusYZ;
 
                 const float radiusXZ = 20.0f;
-                float camX = sin(glfwGetTime()) * radiusXZ;
+                float camX = sin(glfwGetTime()*rotationSpeed) * radiusXZ;
 
                 glm::mat4 view;
                 view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
