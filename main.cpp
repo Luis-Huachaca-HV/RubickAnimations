@@ -845,21 +845,17 @@ int main()
 
         /////////////////////////////////////////////////////////////////////////////
 
-
-
         // camera
         if (modoCamara == 0)
         {
-
             ourShader.use();
             glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
             ourShader.setMat4("view", view);
         }
         if (modoCamara == 1)
         {
-
             ourShader.use();
-            const float radius = 5.0f;
+            const float radius = 20.0f;
             float camX = sin(glfwGetTime()) * radius;
             float camZ = cos(glfwGetTime()) * radius;
             glm::mat4 view;
