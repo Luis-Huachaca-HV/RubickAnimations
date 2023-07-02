@@ -395,7 +395,7 @@ vector<VirtualRubik*> Grid(row*col);
 vector<bool> animations(Grid.size(),false);
 
 void initGrid(){
-     Grid[0] = new VirtualRubik(-3, 3, 0,'W'); //00
+    Grid[0] = new VirtualRubik(-3, 3, 0,'W'); //00
     Grid[1] = new VirtualRubik(-1.5, 3, 0,'R'); //01
     Grid[2] = new VirtualRubik(0, 3, 0,'R'); //02
     Grid[3] = new VirtualRubik(1.5, 3, 0,'W'); //03
