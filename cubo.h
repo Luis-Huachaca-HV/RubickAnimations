@@ -17,14 +17,14 @@ using namespace std;
 class Cubo {
 public:
 
-
+    
     vector<float> cubel;
     unsigned int VAO, VBO, EBO;
     vector<float> Centro;
-
+    float x_,y_,z_;
     Cubo(float x, float y, float z, float tam) {
 
-    
+        
         
         Centro.push_back(x);
         Centro.push_back(y);
@@ -190,9 +190,22 @@ public:
         }*/
 
        // cout << "------------------------------------------------" << endl;;
+       for (int i = 0; i < cubel.size();i+=6) {
+            cubel[i+0] -=x_;
+            cubel[i+1] -=y_;
+            cubel[i+2] -=z_;
+        }
+
         MultMatrices9(Matrix, this->cubel, cubel.size() / 6);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, cubel.size() * sizeof(float), &cubel[0], GL_STATIC_DRAW);
+
+        for (int i = 0; i < cubel.size();i+=6) {
+            cubel[i+0] +=x_;
+            cubel[i+1] +=y_;
+            cubel[i+2] +=z_;
+        }
+
 
         /*for (int i = 0, j = 1; i < cubel.size(); i++, j++) {
             cout << cubel[i] << " , ";
@@ -397,6 +410,20 @@ public:
         };
         for (int j = 0; j < centers.size(); j++) {
             C.push_back(new Cubo(centers[j][0]+x, centers[j][1]+y, centers[j][2]+z, 0.47f, color[j], centerColor));
+            C[j]->x_ = x;
+            C[j]->y_ = y;
+            C[j]->z_ = z;
+
+            int index = 4;
+            if(j == index){
+                 cout<<"\ncubel init theta:"<<theta<<"\n";
+                for(int i=0;i<C[index]->cubel.size();i+=6){
+                    for(int j=0;j<3;j++){
+                        cout<<C[index]->cubel[i+j]<<" ";
+                    }
+                    cout<<"\n";
+                }
+            }
         };
     }
 
@@ -696,12 +723,22 @@ public:
         theta = theta * val;
         if (!p) {
             C[4]->rotar(Rz); // RED
-            for (int i = 0; i < camadasC[0].size(); i++) {
-                C[cOri[camadasC[0][i]]]->rotar(Rz);
+            
+            int index = 4;
+            cout<<"\ncubel rotado theta:"<<theta<<"\n";
+            for(int i=0;i<C[index]->cubel.size();i+=6){
+                for(int j=0;j<3;j++){
+                    cout<<C[index]->cubel[i+j]<<" ";
+                }
+                cout<<"\n";
             }
-            for (int i = 0; i < camadasE[0].size(); i++) {
-                C[eOri[camadasE[0][i]]]->rotar(Rz);
-            }
+
+            // for (int i = 0; i < camadasC[0].size(); i++) {
+            //     C[cOri[camadasC[0][i]]]->rotar(Rz);
+            // }
+            // for (int i = 0; i < camadasE[0].size(); i++) {
+            //     C[eOri[camadasE[0][i]]]->rotar(Rz);
+            // }
         }
         else {
             int tOri = cOri[urf];
