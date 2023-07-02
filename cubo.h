@@ -1,34 +1,38 @@
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <map>
 #include <iostream>
 #include <math.h>
-#include <cmath>
-#include <algorithm>
+
 #include "Matrices.h"
 #include "Shaders/shader_s.h"
 using namespace std;
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 //#include "Shaders/shader_s.h"
+
+using namespace std;
 
 class Cubo {
 public:
 
-    
     vector<float> cubel;
     unsigned int VAO, VBO, EBO;
     vector<float> Centro;
     float x_,y_,z_;
-    Cubo(float x, float y, float z, float tam) {
+     int debug = 0;
+    // glm::mat4 model;
 
-        
-        
+    Cubo(float x, float y, float z, float tam) {
+       
         Centro.push_back(x);
         Centro.push_back(y);
         Centro.push_back(z);
+
+       
         
         tam = tam / 2;
         vector<float>  R{ 1.0f, 0.0f, 0.0f }; //F
@@ -73,6 +77,7 @@ public:
     }
 
     Cubo(float x, float y, float z, float tam, vector<bool> bCol, char centerColor) {
+        // model = glm::mat4(1.0f);
         tam = tam / 2;
         vector<float>  R{ 1.0f, 0.0f, 0.0f }; //F
         vector<float>  O{ 1.0f, 0.5f, 0.0f }; //B
@@ -127,6 +132,11 @@ public:
             }
             i++;
         }
+
+        // cout<<"\ncubel init: \n";
+        // for(int i=0;i<cubel.size();i++){
+        //     cout<<cubel[i]<<" ";
+        // }
     }
 
     void init2() {
@@ -178,6 +188,23 @@ public:
 
     }
 
+
+
+    // void rotar1(float x,float y,float z){
+    //      cout<<"\nMultiplicacion\n";
+
+    //    MultMatrices9(Matrix, this->cubel, cubel.size() / 6);
+
+    //    float traslacion[] ={
+    //     1.0f, 0.0f, 0.0f, ,
+    //     0.0f, 1.0f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 1.0f, 0.0f,
+    //     };
+
+    //    MultMatrices99(traslacion, this->cubel, cubel.size() / 6);
+    // }
+
+
     void rotar(float* Matrix) {
 
         /*cout << "1" << endl;
@@ -190,22 +217,66 @@ public:
         }*/
 
        // cout << "------------------------------------------------" << endl;;
-       for (int i = 0; i < cubel.size();i+=6) {
+    //    cout<<"\nMultiplicacion\n";
+
+       
+
+        
+       float identidad[] ={
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        };
+
+        identidad[3] = -x_; 
+        identidad[7] = -y_;
+        identidad[11] = -z_;
+
+        // Traslacion(identidad,this->cubel, cubel.size()/6);
+
+        for (int i = 0; i < cubel.size();i+=6) {
             cubel[i+0] -=x_;
             cubel[i+1] -=y_;
             cubel[i+2] -=z_;
         }
 
+
         MultMatrices9(Matrix, this->cubel, cubel.size() / 6);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, cubel.size() * sizeof(float), &cubel[0], GL_STATIC_DRAW);
+
 
         for (int i = 0; i < cubel.size();i+=6) {
             cubel[i+0] +=x_;
             cubel[i+1] +=y_;
             cubel[i+2] +=z_;
         }
+  
 
+        // Traslacion(identidad,this->cubel, cubel.size()/6);
+
+    //    MultMatrices99(traslacion, this->cubel, cubel.size() / 6);
+
+        // if( debug < 1){
+        //      MultMatrices99(Matrix, this->cubel, cubel.size() / 6);
+        // }else{
+        //     MultMatrices9(Matrix, this->cubel, cubel.size() / 6);
+        // }
+
+
+
+        // glm::vec3 center(0,0,0);
+        // glm::vec3 center(x_,y_,z_);
+        // model = glm::translate(model, -center);
+
+        // // Realizar la rotación horizontal en funcion al centro dado 
+        // glm::mat4 Rotation = glm::rotate(glm::mat4(1.0f), theta, glm::vec3(0.0f, 0.0f, 1.0f));
+        // model = Rotation * model;
+
+        // // Regresar a la posición original
+        // model = glm::translate(model, center);
+      
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, cubel.size() * sizeof(float), &cubel[0], GL_STATIC_DRAW);
 
         /*for (int i = 0, j = 1; i < cubel.size(); i++, j++) {
             cout << cubel[i] << " , ";
@@ -213,6 +284,7 @@ public:
                 cout << endl;
             }
         } */   
+        // debug++;
     }
 
     //vector<vector<float>> rotacionX(int a) {
@@ -265,13 +337,10 @@ public:
 
 
 class cuboRubik {
+    public:
     vector<int> cOri;
     vector<int> eOri;
-public:
-    vector<Cubo*> C;
-    enum corner { ufl, urf, dlf, dfr, ulb, ubr, dbl, drb}; //0-8
-    enum edge { uf, fl, fr, df, ul, ur, dl, dr, ub, bl, br, db };
-    //corner cPos[8] = { urf, ubr, dlf, dfr, ulb, ufl, drb, dbl };
+    float theta = -5*(PI/180) ;
 
     float Ry[sizeof(_Ry) / sizeof(_Ry[0])];
     float RyI[sizeof(_RyI) / sizeof(_RyI[0])];
@@ -288,8 +357,10 @@ public:
     float Rz2[sizeof(_Rz2) / sizeof(_Rz2[0])];
     float Rz2I[sizeof(_Rz2I) / sizeof(_Rz2I[0])];
 
-    float theta = -5*(PI/180) ;
-    float thetaI = 5*(PI/180) ;
+    vector<Cubo*> C;
+    enum corner { ufl, urf, dlf, dfr, ulb, ubr, dbl, drb}; //0-8
+    enum edge { uf, fl, fr, df, ul, ur, dl, dr, ub, bl, br, db };
+    //corner cPos[8] = { urf, ubr, dlf, dfr, ulb, ufl, drb, dbl };
     
 
     vector< vector<int>> camadas{
@@ -316,12 +387,10 @@ public:
         {fr,ur,dr,br}, //R
         {fl,ul,dl,bl}  //L
     };
-
-    void theta_inv(){
-        theta = -theta ;
-    }
     
     cuboRubik(float x, float y, float z, char centerColor='R') {
+        cOri = { 0,2,6,8,17,19,23,25 };
+        eOri = { 1,3,5,7,9,11,14,16,18,20,22,24 };
 
         ///////////////////////////////
     
@@ -338,11 +407,7 @@ public:
         std::copy(std::begin(_Rz2), std::end(_Rz2), Rz2);
         std::copy(std::begin(_Rz2I), std::end(_Rz2I), Rz2I);
 
-        ////////////////////////////////
-
-
-        cOri = { 0,2,6,8,17,19,23,25 };
-        eOri = { 1,3,5,7,9,11,14,16,18,20,22,24 };
+//         ////////////////////////////////
         
         vector<vector<float>> centers{
             //Front
@@ -414,14 +479,14 @@ public:
             C[j]->y_ = y;
             C[j]->z_ = z;
 
-            int index = 4;
-            if(j == index){
-                 cout<<"\ncubel init theta:"<<theta<<"\n";
-                for(int i=0;i<C[index]->cubel.size();i+=6){
-                    for(int j=0;j<3;j++){
-                        cout<<C[index]->cubel[i+j]<<" ";
-                    }
-                    cout<<"\n";
+
+            if(j == 4){
+                
+                cout<<"\ncubel init con theta: "<<this->theta<<" \n";
+
+                for(int i=0;i<C[4]->cubel.size();i++){
+                    if(i % 6 == 0) cout<<"\n";
+                    cout<<C[4]->cubel[i]<<" ";
                 }
             }
         };
@@ -535,7 +600,7 @@ public:
     }
 
     void Down(bool p, int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[15]->rotar(Ry2); // GREEN
             for (int i = 0; i < camadasC[3].size(); i++) {
@@ -563,7 +628,7 @@ public:
     }
 
     void DownI(bool p, int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[15]->rotar(Ry2I); // GREEN
             for (int i = 0; i < camadasC[3].size(); i++) {
@@ -595,7 +660,7 @@ public:
 
     
     void Rigth(bool p,int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[13]->rotar(Rx); // YELL
             for (int i = 0; i < camadasC[4].size(); i++) {
@@ -629,7 +694,7 @@ public:
     }
 
     void RigthI(bool p,int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[13]->rotar(RxI); // YELL
             for (int i = 0; i < camadasC[4].size(); i++) {
@@ -664,7 +729,7 @@ public:
     }
 
     void Left(bool p, int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[12]->rotar(Rx2); // BLUE
             for (int i = 0; i < camadasC[5].size(); i++) {
@@ -691,7 +756,7 @@ public:
     }
 
     void LeftI(bool p, int val) {
-        theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[12]->rotar(Rx2I); // BLUE
             for (int i = 0; i < camadasC[5].size(); i++) {
@@ -720,25 +785,26 @@ public:
     }
 
     void Front(bool p,int val) {
-        theta = theta * val;
+        // theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[4]->rotar(Rz); // RED
-            
+
+            // int index = eOri[camadasE[0][0]];
             int index = 4;
-            cout<<"\ncubel rotado theta:"<<theta<<"\n";
-            for(int i=0;i<C[index]->cubel.size();i+=6){
-                for(int j=0;j<3;j++){
-                    cout<<C[index]->cubel[i+j]<<" ";
-                }
-                cout<<"\n";
+            // C[index]->rotar(Rz);
+            cout<<"\ncubel rotado con theta: "<<theta<<" \n";
+            for(int i=0;i<C[index]->cubel.size();i++){
+                    if(i % 6 == 0) cout<<"\n";
+                    cout<<C[index]->cubel[i]<<" ";
             }
 
-            // for (int i = 0; i < camadasC[0].size(); i++) {
-            //     C[cOri[camadasC[0][i]]]->rotar(Rz);
-            // }
-            // for (int i = 0; i < camadasE[0].size(); i++) {
-            //     C[eOri[camadasE[0][i]]]->rotar(Rz);
-            // }
+            for (int i = 0; i < camadasC[0].size(); i++) {
+                C[cOri[camadasC[0][i]]]->rotar(Rz);
+            }
+            for (int i = 0; i < camadasE[0].size(); i++) {
+                C[eOri[camadasE[0][i]]]->rotar(Rz);
+            }
         }
         else {
             int tOri = cOri[urf];
@@ -756,7 +822,8 @@ public:
     }
 
     void FrontI(bool p,int val) {
-        theta = theta * val;
+        // theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[4]->rotar(RzI); // RED
             for (int i = 0; i < camadasC[0].size(); i++) {
@@ -784,7 +851,8 @@ public:
     }
 
     void Back(bool p,int val) {
-        theta = theta * val;
+        // theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[21]->rotar(Rz2); // ORA
             for (int i = 0; i < camadasC[1].size(); i++) {
@@ -811,7 +879,8 @@ public:
     }
 
     void BackI(bool p,int val) {
-        theta = theta * val;
+        // theta = theta * val;
+        this->theta = this->theta * val;
         if (!p) {
             C[21]->rotar(Rz2I); // ORA
             for (int i = 0; i < camadasC[1].size(); i++) {
