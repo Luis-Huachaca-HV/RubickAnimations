@@ -487,7 +487,7 @@ void triggerModoSolucion(char modoSolucion_){
 }
 
 void triggerModoRotacion(char modoRotacion_){
-    for(int i=0; i<=Grid.size();i++){
+    for(int i=0; i<Grid.size();i++){
         Grid[i]->modoRotacion = modoRotacion_;
     }
 }
@@ -737,6 +737,7 @@ int main()
                 {
                     cubo->modoRotacion = movs[ cubo->pasos_solu[cubo->iter]];
                     cout<<cubo->modoRotacion<<" - ";
+                    cubo->iter++;
                 }
                 else
                 {
@@ -746,7 +747,7 @@ int main()
                     cubo->iter = 0;
                     cout<<"\n";
                 }
-                cubo->iter++;
+                
             }
 
             // mosaic generator
@@ -760,6 +761,7 @@ int main()
                 {
                     cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
                     cout<<cubo->modoRotacion<<" ";
+                    cubo->iter++;
                 }
                 else
                 {
@@ -770,7 +772,7 @@ int main()
                     animations[i] = true; // animation finished!!
                     cout<<"\n";
                 }
-                cubo->iter++;
+                
             }
 
 
@@ -1056,6 +1058,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     //Modo Solucion
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS){
         // triggerModoSolucion(0,1,'3');
+         for(int i=0; i< Grid.size(); i++){
+            Grid[i]->modoSolucion= '3';
+        }
     }
     if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
 
