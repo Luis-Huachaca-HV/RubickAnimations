@@ -868,15 +868,25 @@ int main()
         }
         if (modoCamara == 2)
         {
-
             ourShader.use();
-            const float radius = 5.0f;
+            
+            const float radius = 20.0f;
             float camY = sin(glfwGetTime()) * radius;
             float camZ = cos(glfwGetTime()) * radius;
 
-            // std::cout << camY << " " << camZ << std::endl;
-            glm::mat4 view;
-            view = glm::lookAt(glm::vec3(0.0, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+            //god fix
+            glm::vec3 up;
+            if (camZ >= 0)
+                up = glm::vec3(0.0f, 1.0f, 0.0f);
+            else
+                up = glm::vec3(0.0f, -1.0f, 0.0f);
+
+            glm::mat4 view = glm::lookAt(
+                    glm::vec3(0.0f, camY, camZ),
+                    glm::vec3(0.0f, 0.0f, 0.0f),
+                    up
+            );
+
             ourShader.setMat4("view", view);
         }
         if (modoCamara == 3) {
@@ -906,23 +916,19 @@ int main()
                 ourShader.use();
                 ourShader.setMat4("view", view);
             } else {
-                //update angle
-                float angle = currentTime * rotationSpeed;
+                ourShader.use();
 
+                const float radiusYZ = 20.0f;
+                float camY = sin(glfwGetTime()) * radiusYZ;
+                float camZ = cos(glfwGetTime()) * radiusYZ;
 
-                //updating camera
-                float camX = sin(angle) * radius;
-                float camY = cos(angle) * radius;
-                cameraPos.x = camX;
-                cameraPos.y = camY;
+                const float radiusXZ = 20.0f;
+                float camX = sin(glfwGetTime()) * radiusXZ;
 
-                //std::cout << "Camera position: (" << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << ")" << std::endl;
-                //std::cout << "Angle: " << angle << std::endl;
-
-
-                glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-
+                glm::mat4 view;
+                view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
                 ourShader.setMat4("view", view);
+
             }
         }
 
