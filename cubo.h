@@ -204,6 +204,24 @@ public:
     //    MultMatrices99(traslacion, this->cubel, cubel.size() / 6);
     // }
 
+    void trasladar(float X,float Y,float Z){
+
+        //make translation
+        for (int i = 0; i < cubel.size();i+=6) {
+            cubel[i+0] +=X;
+            cubel[i+1] +=Y;
+            cubel[i+2] +=Z;
+        }
+
+        //change center
+        x_ +=X;
+        y_ +=Y;
+        z_ +=Z;
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, cubel.size() * sizeof(float), &cubel[0], GL_STATIC_DRAW);
+
+    }
 
     void rotar(float* Matrix) {
 
@@ -233,6 +251,7 @@ public:
         identidad[11] = -z_;
 
         // Traslacion(identidad,this->cubel, cubel.size()/6);
+
 
         for (int i = 0; i < cubel.size();i+=6) {
             cubel[i+0] -=x_;
@@ -511,6 +530,13 @@ class cuboRubik {
     void init() {
         for (int i = 0; i < C.size(); i++) {
             C[i]->init2();
+        }
+    }
+
+    
+    void trasladar(float x,float y,float z){
+        for(int i=0;i < C.size();i++){
+            C[i]->trasladar(x,y,z);
         }
     }
 
