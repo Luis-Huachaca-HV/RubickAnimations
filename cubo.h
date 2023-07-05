@@ -171,9 +171,12 @@ public:
         //pos
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        //color
+         // normal attribute
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+        //color
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -182,7 +185,10 @@ public:
     void dibujar2(Shader OurShader) {
         OurShader.use();
         glm::mat4 model = glm::mat4(1.0f);
+
         OurShader.setMat4("model", model);
+        //OurShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+
         glBindVertexArray(this->VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -501,12 +507,12 @@ class cuboRubik {
 
             if(j == 4){
                 
-                cout<<"\ncubel init con theta: "<<this->theta<<" \n";
+                //cout<<"\ncubel init con theta: "<<this->theta<<" \n";
 
-                for(int i=0;i<C[4]->cubel.size();i++){
-                    if(i % 6 == 0) cout<<"\n";
-                    cout<<C[4]->cubel[i]<<" ";
-                }
+                //for(int i=0;i<C[4]->cubel.size();i++){
+                //    if(i % 6 == 0) cout<<"\n";
+                    //cout<<C[4]->cubel[i]<<" ";
+                //}
             }
         };
     }
@@ -524,7 +530,7 @@ class cuboRubik {
     }
 
     ~cuboRubik() {
-        cout<< "Why\n";
+        //cout<< "Why\n";
     }
 
     void init() {
@@ -819,11 +825,11 @@ class cuboRubik {
             // int index = eOri[camadasE[0][0]];
             int index = 4;
             // C[index]->rotar(Rz);
-            cout<<"\ncubel rotado con theta: "<<theta<<" \n";
-            for(int i=0;i<C[index]->cubel.size();i++){
-                    if(i % 6 == 0) cout<<"\n";
-                    cout<<C[index]->cubel[i]<<" ";
-            }
+            //cout<<"\ncubel rotado con theta: "<<theta<<" \n";
+            //for(int i=0;i<C[index]->cubel.size();i++){
+                    //if(i % 6 == 0) cout<<"\n";
+                    //cout<<C[index]->cubel[i]<<" ";
+            //}
 
             for (int i = 0; i < camadasC[0].size(); i++) {
                 C[cOri[camadasC[0][i]]]->rotar(Rz);
