@@ -11,8 +11,8 @@
 #include <functional>
 #include <chrono>
 #include <thread>
-#include "Headers/Header.h"
-#include "Shaders/shader_s.h"
+#include "learnopengl/shader_m.h"
+#include "learnopengl/camera.h"
 // #include "../../../../grafica/Rubik/CubeSolver-Master/CubeSolver-Master/Headers/Header.h"
 #include <iostream>
 #include <vector>
@@ -20,32 +20,99 @@
 #include <string>
 #include <random> 
 
-const char *vertex_shader_text =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec3 aColor;\n"
-        "out vec3 ourColor;\n"
-        "uniform mat4 model;\n"
-        "uniform mat4 view;\n"
-        "uniform mat4 projection;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
-        "    ourColor = aColor;\n"
-        "}\n";
-
-const char *fragment_shader_text =
-        "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "in vec3 ourColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(ourColor, 1.0);\n"
-        "}\n";
-
 using namespace std;
 
+const char* vertex_shader_text =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
+    "uniform mat4 model;\n"
+    "uniform mat4 view;\n"
+    "uniform mat4 projection;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+    "    ourColor = aColor;\n"
+    "}\n";
 
+const char* fragment_shader_text =
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "in vec3 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = vec4(ourColor, 1.0);\n"
+    "}\n";
+const char* light_cubevs =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
+    "uniform mat4 model;\n"
+    "uniform mat4 view;\n"
+    "uniform mat4 projection;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+    "    ourColor = aColor;\n"
+    "}\n";
+
+const char* light_cubefs = 
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "in vec3 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = vec4(1.0);\n"
+    "}\n";
+
+const char* basic_lightingvs = 
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormal;\n"
+    "layout (location = 2) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
+    "out vec3 FragPos;\n"
+    "out vec3 Normal;\n"
+    "uniform mat4 model;\n"
+    "uniform mat4 view;\n"
+    "uniform mat4 projection;\n"
+    "void main()\n"
+    "{\n"
+    " FragPos = vec3(model * vec4(aPos, 1.0));\n"
+    " Normal = mat3(transpose(inverse(model))) * aNormal;\n"
+    " gl_Position = projection * view * vec4(FragPos, 1.0);\n"
+    " ourColor = aColor;\n"
+
+    "}\n";
+
+const char* basic_lightingfs = 
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "in vec3 Normal;\n"
+    "in vec3 FragPos;\n"
+    "uniform vec3 lightPos;\n"
+    "uniform vec3 viewPos;\n"
+    "uniform vec3 lightColor;\n"
+    "uniform vec3 objectColor;\n"
+    "in vec3 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    " float ambientStrength = 0.1;\n"
+    " vec3 ambient = ambientStrength * lightColor;\n"
+    " vec3 norm = normalize(Normal);\n"
+    " vec3 lightDir = normalize(lightPos - FragPos);\n"
+    " float diff = max(dot(norm, lightDir), 0.0);\n"
+    " vec3 diffuse = diff * lightColor;\n"
+    " float specularStrength = 0.5;\n"
+    " vec3 viewDir = normalize(viewPos - FragPos);\n"
+    " vec3 reflectDir = reflect(-lightDir, norm);\n"
+    " float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);\n"
+    " vec3 specular = specularStrength * spec * lightColor;\n"
+    " vec3 result = (ambient + diffuse + specular) * ourColor;\n"
+    " FragColor = vec4(result, 1.0);\n"
+    "}\n";
 ////############## CLASS STATE //////////////////////
 
 class VirtualRubik{
@@ -294,6 +361,7 @@ const unsigned int SCR_HEIGHT = 600;
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 10.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 bool firstMouse = true;
 float yaw = -90.0f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
@@ -551,6 +619,7 @@ void triggerModoRotacion(char modoRotacion_){
 }
 
 
+glm::vec3 lightPos(1.2f, 1.5f, 1.0f);
 
 
 int main()
@@ -588,12 +657,58 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     Shader ourShader(vertex_shader_text, fragment_shader_text);
+    Shader lightingShader(basic_lightingvs, basic_lightingfs);
+    Shader lightCubeShader(light_cubevs, light_cubefs);
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-    ourShader.use();
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
+    lightingShader.use();
+    lightCubeShader.use();
+    //ourShader.use();
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    ourShader.setMat4("projection", projection);
-
+    lightingShader.setMat4("projection", projection);
+    lightCubeShader.setMat4("projection", projection);
    
     glPointSize(10);
     string shuffleCube;
@@ -614,7 +729,32 @@ int main()
     int end = Grid.size() - 1;
     bool TraslationReverse = true;
     // ths[0] = thread(listenActions,init,end,ref(ourShader));
+    unsigned int VBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &VBO);
 
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(cubeVAO);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+    // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // note that we update the lamp's position attribute's stride to reflect the updated buffer data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -637,7 +777,46 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /////////////////////////////////////////////////////////////////////////////
+         // be sure to activate shader when setting uniforms/drawing objects
+        lightingShader.use();
+        lightingShader.setVec3("objectColor", 220.0f, 220.0f, 220.0f);
+        lightingShader.setVec3("lightColor", 5.0f, 2.0f, 3.0f);
+        lightingShader.setVec3("lightPos", lightPos);
+        lightingShader.setVec3("viewPos", camera.Position);
 
+
+        // view/projection transformations
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        lightingShader.setMat4("projection", projection);
+        lightingShader.setMat4("view", view);
+
+        // world transformation
+        glm::mat4 model = glm::mat4(1.0f);
+        lightingShader.setMat4("model", model);
+         // change the light's position values over time (can be done anywhere in the render loop actually, but try to do it at least before using the light source positions)
+        lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
+        lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
+        // render the cube
+        //glBindVertexArray(cubeVAO);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+        // also draw the lamp object
+        
+        lightCubeShader.use();
+        lightCubeShader.setMat4("projection", projection);
+        lightCubeShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lightCubeShader.setMat4("model", model);
+        
+
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        /*
+        */
 
         for(int i=init; i <= end ; i++)
         {
@@ -650,7 +829,7 @@ int main()
                 if (cubo->iter < cubo->pasos_solu.size())
                 {
                     cubo->modoRotacion = movs[ cubo->pasos_solu[cubo->iter]];
-                    cout<<cubo->modoRotacion<<" - ";
+                    //cout<<cubo->modoRotacion<<" - ";
                     cubo->iter++;
                 }
                 else
@@ -659,7 +838,7 @@ int main()
                     cubo->modoSolucion = 'n';
                     // modoCamara = 2;
                     cubo->iter = 0;
-                    cout<<"\n";
+                    //cout<<"\n";
                 }
                 
             }
@@ -671,21 +850,21 @@ int main()
                 //     cout<<"\nMOD Mosaic:\n";
                 // }
 
-                cout<<"\nCubo["<<i<<"]: ";
+                //cout<<"\nCubo["<<i<<"]: ";
                 if (cubo->iter < cubo->mosaicMoves.size())
                 {
                     cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
-                    cout<<cubo->modoRotacion<<" ";
+                    //cout<<cubo->modoRotacion<<" ";
                     cubo->iter++;
                 }
                 else
                 {
-                    std::cout << " Animation Finished!!" << std::endl;
+                    //std::cout << " Animation Finished!!" << std::endl;
                     cubo->modoSolucion = 'n';
                     // modoCamara = 2;
                     cubo->iter = 0;
                     animations[i] = true; // animation finished!!
-                    cout<<"\n";
+                    //cout<<"\n";
                 }
                 
             }
@@ -772,23 +951,25 @@ int main()
         // camera
         if (modoCamara == 0)
         {
-            ourShader.use();
+            lightingShader.use();
             glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-            ourShader.setMat4("view", view);
+            lightingShader.setMat4("view", view);
+            
+        
         }
         if (modoCamara == 1)
         {
-            ourShader.use();
+            lightingShader.use();
             const float radius = 20.0f;
             float camX = sin(glfwGetTime()) * radius;
             float camZ = cos(glfwGetTime()) * radius;
             glm::mat4 view;
             view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-            ourShader.setMat4("view", view);
+            lightingShader.setMat4("view", view);
         }
         if (modoCamara == 2)
         {
-            ourShader.use();
+            lightingShader.use();
             
             const float radius = 20.0f;
             float camY = sin(glfwGetTime()) * radius;
@@ -807,7 +988,7 @@ int main()
                     up
             );
 
-            ourShader.setMat4("view", view);
+            lightingShader.setMat4("view", view);
         }
         if (modoCamara == 3) {
             const float minCamZ = 2.0f;
@@ -833,10 +1014,10 @@ int main()
 
                 glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-                ourShader.use();
-                ourShader.setMat4("view", view);
+                lightingShader.use();
+                lightingShader.setMat4("view", view);
             } else {
-                ourShader.use();
+                lightingShader.use();
 
                 const float radiusYZ = 20.0f;
                 float camY = sin(glfwGetTime()*rotationSpeed) * radiusYZ;
@@ -847,7 +1028,7 @@ int main()
 
                 glm::mat4 view;
                 view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-                ourShader.setMat4("view", view);
+                lightingShader.setMat4("view", view);
 
             }
         }
@@ -856,12 +1037,12 @@ int main()
        
        //draw cubes
         for(auto cubo :Grid){
-            cubo->draw(ourShader);
+            cubo->draw(lightingShader);
         }
 
 
         if (animationsFinished() && TraslationReverse){
-            cout<<"\nALL animation finished!!!";
+            //cout<<"\nALL animation finished!!!";
             //trigger traslations
             for(int i=0; i< Zpos.size(); i++){
                 Zpos[i]->modoTraslacion= "Z-";
@@ -881,7 +1062,7 @@ int main()
 
 
 
-    cout << endl;
+    //cout << endl;
     glfwTerminate();
     return 0;
 }
