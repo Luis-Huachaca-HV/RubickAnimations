@@ -337,11 +337,6 @@ public:
 
 ////////////////////////////////////////////////////////
 
-
-
-int modoCamara = 0;
-bool zoomComplete = false;
-
 // char modoSolucion = 'n';
 // char modoRotacion = 'n';
 // int rotloop = 90;
@@ -362,6 +357,11 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 10.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+int modoCamara = 0;
+bool zoomComplete = false;
+float rotationSpeed = 0.55f;
+const float cameraSpeed = 0.07f;
 
 bool firstMouse = true;
 float yaw = -90.0f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
@@ -818,132 +818,7 @@ int main()
         /*
         */
 
-        for(int i=init; i <= end ; i++)
-        {
 
-            VirtualRubik* cubo = Grid[i];
-
-            // rubik solver
-            if (cubo->modoSolucion == '3' && cubo->modoRotacion == 'n')
-            {
-                if (cubo->iter < cubo->pasos_solu.size())
-                {
-                    cubo->modoRotacion = movs[ cubo->pasos_solu[cubo->iter]];
-                    //cout<<cubo->modoRotacion<<" - ";
-                    cubo->iter++;
-                }
-                else
-                {
-                    std::cout << "Invalid input" << std::endl;
-                    cubo->modoSolucion = 'n';
-                    // modoCamara = 2;
-                    cubo->iter = 0;
-                    //cout<<"\n";
-                }
-                
-            }
-
-            // mosaic generator
-            if (cubo->modoSolucion == '7' && cubo->modoRotacion == 'n')
-            {
-                // if(cubo->iter == 0){
-                //     cout<<"\nMOD Mosaic:\n";
-                // }
-
-                //cout<<"\nCubo["<<i<<"]: ";
-                if (cubo->iter < cubo->mosaicMoves.size())
-                {
-                    cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
-                    //cout<<cubo->modoRotacion<<" ";
-                    cubo->iter++;
-                }
-                else
-                {
-                    //std::cout << " Animation Finished!!" << std::endl;
-                    cubo->modoSolucion = 'n';
-                    // modoCamara = 2;
-                    cubo->iter = 0;
-                    animations[i] = true; // animation finished!!
-                    //cout<<"\n";
-                }
-                
-            }
-
-           
-
-             //traslations
-            if(cubo->modoTraslacion == "Z+"){
-                //Trasladar
-                cubo->trasladarZPos();
-            }
-            else if(cubo->modoTraslacion == "Z-"){
-                //Trasladar
-                cubo->trasladarZNeg();
-            }
-
-
-            // cube rotations
-            if (cubo->modoRotacion == 'u')
-            {
-                cubo->rotarUp();
-                cubo->pasoslib += "U";
-            }
-            else if (cubo->modoRotacion == 'o')
-            {
-                cubo->rotarUpInv();
-                cubo->pasoslib += "U'";
-            }
-            else if (cubo->modoRotacion == 'd')
-            {
-                cubo->rotarDown();
-                cubo->pasoslib += "D";
-            }
-            else if (cubo->modoRotacion == 'm')
-            {
-                cubo->rotarDownI();
-                cubo->pasoslib += "D'";
-            }
-            else if (cubo->modoRotacion == 'r')
-            {
-                cubo->rotarRigth();
-                cubo->pasoslib += "R";
-            }
-            else if (cubo->modoRotacion == 'h')
-            {
-                cubo->rotarRigthI();
-                cubo->pasoslib += "R'";
-            }
-            else if (cubo->modoRotacion == 'l')
-            {
-                cubo->rotarLeft();
-                cubo->pasoslib += "L";
-            }
-            else if (cubo->modoRotacion == 'k')
-            {
-                cubo->rotarLeftI();
-                cubo->pasoslib += "L'";
-            }
-            else if (cubo->modoRotacion == 'f')
-            {
-                cubo->rotarFront();
-                cubo->pasoslib += "F";
-            }
-            else if (cubo->modoRotacion == 't')
-            {
-                cubo->rotarFrontI();
-                cubo->pasoslib += "F'";
-            }
-            else if (cubo->modoRotacion == 'b')
-            {
-                cubo->rotarBack();
-                cubo->pasoslib += "B";
-            }
-            else if (cubo->modoRotacion == 'g')
-            {
-                cubo->rotarBackI();
-                cubo->pasoslib += "B'";
-            }
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////
@@ -995,8 +870,6 @@ int main()
             const float maxCamZ = 20.0f;
             const float radius = 20.0f;
 
-            const float rotationSpeed = 0.55f;
-            const float cameraSpeed = 0.07f;
             float initialAngle = 0.0f;
             float currentTime = glfwGetTime();
             if (!zoomComplete) {
@@ -1017,6 +890,134 @@ int main()
                 lightingShader.use();
                 lightingShader.setMat4("view", view);
             } else {
+
+                for(int i=init; i <= end ; i++)
+                {
+
+                    VirtualRubik* cubo = Grid[i];
+
+                    // rubik solver
+                    if (cubo->modoSolucion == '3' && cubo->modoRotacion == 'n')
+                    {
+                        if (cubo->iter < cubo->pasos_solu.size())
+                        {
+                            cubo->modoRotacion = movs[ cubo->pasos_solu[cubo->iter]];
+                            //cout<<cubo->modoRotacion<<" - ";
+                            cubo->iter++;
+                        }
+                        else
+                        {
+                            std::cout << "Invalid input" << std::endl;
+                            cubo->modoSolucion = 'n';
+                            // modoCamara = 2;
+                            cubo->iter = 0;
+                            //cout<<"\n";
+                        }
+                        
+                    }
+
+                    // mosaic generator
+                    if (cubo->modoSolucion == '7' && cubo->modoRotacion == 'n')
+                    {
+                        // if(cubo->iter == 0){
+                        //     cout<<"\nMOD Mosaic:\n";
+                        // }
+
+                        //cout<<"\nCubo["<<i<<"]: ";
+                        if (cubo->iter < cubo->mosaicMoves.size())
+                        {
+                            cubo->modoRotacion = movs[ cubo->mosaicMoves[cubo->iter] ];
+                            //cout<<cubo->modoRotacion<<" ";
+                            cubo->iter++;
+                        }
+                        else
+                        {
+                            //std::cout << " Animation Finished!!" << std::endl;
+                            cubo->modoSolucion = 'n';
+                            // modoCamara = 2;
+                            cubo->iter = 0;
+                            animations[i] = true; // animation finished!!
+                            //cout<<"\n";
+                        }
+                        
+                    }
+
+                
+
+                    //traslations
+                    if(cubo->modoTraslacion == "Z+"){
+                        //Trasladar
+                        cubo->trasladarZPos();
+                    }
+                    else if(cubo->modoTraslacion == "Z-"){
+                        //Trasladar
+                        cubo->trasladarZNeg();
+                    }
+
+
+                    // cube rotations
+                    if (cubo->modoRotacion == 'u')
+                    {
+                        cubo->rotarUp();
+                        cubo->pasoslib += "U";
+                    }
+                    else if (cubo->modoRotacion == 'o')
+                    {
+                        cubo->rotarUpInv();
+                        cubo->pasoslib += "U'";
+                    }
+                    else if (cubo->modoRotacion == 'd')
+                    {
+                        cubo->rotarDown();
+                        cubo->pasoslib += "D";
+                    }
+                    else if (cubo->modoRotacion == 'm')
+                    {
+                        cubo->rotarDownI();
+                        cubo->pasoslib += "D'";
+                    }
+                    else if (cubo->modoRotacion == 'r')
+                    {
+                        cubo->rotarRigth();
+                        cubo->pasoslib += "R";
+                    }
+                    else if (cubo->modoRotacion == 'h')
+                    {
+                        cubo->rotarRigthI();
+                        cubo->pasoslib += "R'";
+                    }
+                    else if (cubo->modoRotacion == 'l')
+                    {
+                        cubo->rotarLeft();
+                        cubo->pasoslib += "L";
+                    }
+                    else if (cubo->modoRotacion == 'k')
+                    {
+                        cubo->rotarLeftI();
+                        cubo->pasoslib += "L'";
+                    }
+                    else if (cubo->modoRotacion == 'f')
+                    {
+                        cubo->rotarFront();
+                        cubo->pasoslib += "F";
+                    }
+                    else if (cubo->modoRotacion == 't')
+                    {
+                        cubo->rotarFrontI();
+                        cubo->pasoslib += "F'";
+                    }
+                    else if (cubo->modoRotacion == 'b')
+                    {
+                        cubo->rotarBack();
+                        cubo->pasoslib += "B";
+                    }
+                    else if (cubo->modoRotacion == 'g')
+                    {
+                        cubo->rotarBackI();
+                        cubo->pasoslib += "B'";
+                    }
+                }    
+
                 lightingShader.use();
 
                 const float radiusYZ = 20.0f;
@@ -1029,7 +1030,13 @@ int main()
                 glm::mat4 view;
                 view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
                 lightingShader.setMat4("view", view);
-
+                cout << "glfwGetTime():" << glfwGetTime();
+                cout << "\n" << rotationSpeed;
+                
+                if(currentTime > 11.7814)
+                {
+                    rotationSpeed = 0.01f;
+                }
             }
         }
 
@@ -1103,7 +1110,20 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         modoCamara = 2;
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS){
         modoCamara = 3;
+        zoomComplete = false;
         cameraPos = glm::vec3(0.0f,0.0f,3.0f);
+
+        // trigger mosaic generator
+        for(int i=0; i< Grid.size(); i++){
+            Grid[i]->modoSolucion= '7';
+        }
+        //trigger traslations
+        for(int i=0; i< Zpos.size(); i++){
+            Zpos[i]->modoTraslacion= "Z+";
+        }
+         for(int i=0; i< Zneg.size(); i++){
+            Zneg[i]->modoTraslacion= "Z-";
+        }
     }
     //rubik solver
     // if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
