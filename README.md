@@ -13,6 +13,7 @@ OpenGl v3.0, GLM, GLFW y C++ 17, asi como un entorno Windows
 |               Animación de cámara en el plano XZ               |   1    |
 |               Animación de cámara en el plano YZ               |   2    |
 | Animación final de la cámara (zoom ,órbita y mosaic generator) |   9    |
+|   Ejecuta el solver de un cubo rubik despues de la animación   |   3    |
 |           Movimiento hacia arriba de todos los cubos           |   U    |
 |           Movimiento hacia abajo de todos los cubos            |   D    |
 |         Movimiento hacia la derecha de todos los cubos         |   R    |

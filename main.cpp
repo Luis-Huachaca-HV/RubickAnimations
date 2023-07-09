@@ -19,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <random> 
+#include "./Headers/Testing Functions.h"
 
 using namespace std;
 
@@ -132,6 +133,7 @@ public:
     vector<string> mosaicMoves;
     cuboRubik* Cubo;
     Shader* ourShader;
+    string pasosLib;
 
     float theta = -5*(PI/180) ;
     // float thetaI = 5*(PI/180) ;
@@ -151,7 +153,7 @@ public:
         modoTraslacion = "n";
         rotloop = 90;
         trasloop = delta;
-        string pasoslib = "";
+        pasoslib = "";
         Cubo = new cuboRubik(x,y,z,centerColor);
         iter = 0 ;
         // ourShader = ourShader_;
@@ -205,6 +207,7 @@ public:
         {
             Cubo->Up(1, 1);
             rotloop = 90;
+            pasoslib += "U";
             modoRotacion = 'n';
         }
     }
@@ -219,6 +222,7 @@ public:
         {
             Cubo->UpI(1, -1);
             rotloop = 90;
+            pasoslib += "U'";
             modoRotacion = 'n';
         }
     }
@@ -230,6 +234,7 @@ public:
         {
             Cubo->Down(1, 1);
             rotloop = 90;
+            pasoslib += "D";
             modoRotacion = 'n';
         }
     }
@@ -241,6 +246,7 @@ public:
         {
             Cubo->DownI(1, 1);
             rotloop = 90;
+            pasoslib += "D'";
             modoRotacion = 'n';
         }
     }
@@ -252,6 +258,7 @@ public:
         {
             Cubo->Rigth(1, 1);
             rotloop = 90;
+            pasoslib += "R";
             modoRotacion = 'n';
         }
     }
@@ -263,6 +270,7 @@ public:
         {
             Cubo->RigthI(1, 1);
             rotloop = 90;
+            pasoslib += "R'";
             modoRotacion = 'n';
         }
     }
@@ -274,6 +282,7 @@ public:
         {
             Cubo->Left(1, 1);
             rotloop = 90;
+            pasoslib += "L";
             modoRotacion = 'n';
         }
     }
@@ -285,6 +294,7 @@ public:
         {
             Cubo->LeftI(1, 1);
             rotloop = 90;
+            pasoslib += "L'";
             modoRotacion = 'n';
         }
     }
@@ -296,6 +306,7 @@ public:
         {
             Cubo->Front(1, 1);
             rotloop = 90;
+            pasoslib += "F";
             modoRotacion = 'n';
         }
     }
@@ -307,6 +318,7 @@ public:
         {
             Cubo->FrontI(1, 1);
             rotloop = 90;
+            pasoslib += "F'";
             modoRotacion = 'n';
         }
     }
@@ -318,6 +330,7 @@ public:
         {
             Cubo->Back(1, 1);
             rotloop = 90;
+            pasoslib += "B";
             modoRotacion = 'n';
         }
     }
@@ -329,6 +342,7 @@ public:
         {
             Cubo->BackI(1, 1);
             rotloop = 90;
+            pasoslib += "B'";
             modoRotacion = 'n';
         }
     }
@@ -960,62 +974,61 @@ int main()
                     if (cubo->modoRotacion == 'u')
                     {
                         cubo->rotarUp();
-                        cubo->pasoslib += "U";
                     }
                     else if (cubo->modoRotacion == 'o')
                     {
                         cubo->rotarUpInv();
-                        cubo->pasoslib += "U'";
+                        // cubo->pasoslib += "U'";
                     }
                     else if (cubo->modoRotacion == 'd')
                     {
                         cubo->rotarDown();
-                        cubo->pasoslib += "D";
+                        // cubo->pasoslib += "D";
                     }
                     else if (cubo->modoRotacion == 'm')
                     {
                         cubo->rotarDownI();
-                        cubo->pasoslib += "D'";
+                        // cubo->pasoslib += "D'";
                     }
                     else if (cubo->modoRotacion == 'r')
                     {
                         cubo->rotarRigth();
-                        cubo->pasoslib += "R";
+                        // cubo->pasoslib += "R";
                     }
                     else if (cubo->modoRotacion == 'h')
                     {
                         cubo->rotarRigthI();
-                        cubo->pasoslib += "R'";
+                        // cubo->pasoslib += "R'";
                     }
                     else if (cubo->modoRotacion == 'l')
                     {
                         cubo->rotarLeft();
-                        cubo->pasoslib += "L";
+                        // cubo->pasoslib += "L";
                     }
                     else if (cubo->modoRotacion == 'k')
                     {
                         cubo->rotarLeftI();
-                        cubo->pasoslib += "L'";
+                        // cubo->pasoslib += "L'";
                     }
                     else if (cubo->modoRotacion == 'f')
                     {
                         cubo->rotarFront();
-                        cubo->pasoslib += "F";
+                        // cubo->pasoslib += "F";
                     }
                     else if (cubo->modoRotacion == 't')
                     {
                         cubo->rotarFrontI();
-                        cubo->pasoslib += "F'";
+                        // cubo->pasoslib += "F'";
                     }
                     else if (cubo->modoRotacion == 'b')
                     {
                         cubo->rotarBack();
-                        cubo->pasoslib += "B";
+                        // cubo->pasoslib += "B";
                     }
                     else if (cubo->modoRotacion == 'g')
                     {
                         cubo->rotarBackI();
-                        cubo->pasoslib += "B'";
+                        // cubo->pasoslib += "B'";
                     }
                 }    
 
@@ -1164,9 +1177,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     //Modo Solver
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS){
         // triggerModoSolucion(0,1,'3');
-         for(int i=0; i< Grid.size(); i++){
+        //  for(int i=0; i< Grid.size(); i++){
+            int i= 16;
+            Grid[i]->pasos_solu = convertMoves(testFromCube(Grid[i]->pasoslib));
+            cout << "pasoslib: " << Grid[i]->pasoslib << endl;
+            cout << "pasos solucion" << endl;
+            for (int i = 0; i < Grid[i]->pasos_solu.size(); i++)
+            {
+                cout << Grid[i]->pasos_solu[i] << "|";
+            }
+            // Grid[i]->modoTraslacion= "Z+";
+            Grid[i]->modoTraslacion= "Z+";
+    //     cout << endl;
+    //     modoRotacion = 'n';
             Grid[i]->modoSolucion= '3';
-        }
+        // }
     }
     //Modo Mosaico generator
     if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS){
