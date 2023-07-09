@@ -30,6 +30,10 @@ OpenGl v3.0, GLM, GLFW y C++ 17, asi como un entorno Windows
 ## Demo
 ![Animacion Final](https://github.com/Misash/makerpunks/assets/70419764/eb9557ee-570c-4ae2-b206-bc5a7ed40be6)
 
+## Solver
+
+![solverrecortado](https://github.com/Misash/OPUS-web3.0/assets/70419764/511ac7c4-2db0-4a03-921b-4af236b31b24)
+
 ## Video 
 [Enlace al video de la animación](https://drive.google.com/file/d/15v_MOUeGWbh-lqCm2d6-CX1RIeS_bQWG/view)
 
